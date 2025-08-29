@@ -1,0 +1,36 @@
+# Node dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime files
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# dotenv files
+.env
+.local.env
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Coverage / testing
+coverage/
+.nyc_output/
