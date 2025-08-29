@@ -34,25 +34,12 @@ const options: swaggerJsdoc.Options = {
             complexity_weight: { type: "number" },
           },
         },
-        Pagination: {
+        Category: {
           type: "object",
           properties: {
-            page: {
-              type: "integer",
-              description: "Current page number",
-            },
-            limit: {
-              type: "integer",
-              description: "Number of items per page",
-            },
-            total: {
-              type: "integer",
-              description: "Total number of items",
-            },
-            pages: {
-              type: "integer",
-              description: "Total number of pages",
-            },
+            bgg_id: { type: "string" },
+            name: { type: "string" },
+            description: { type: "string" },
           },
         },
       },

@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 import { ICategory } from "./category.model";
 
 export interface IGame extends Document {
+  _id: string;
   bgg_id: number;
   name: string;
   description: string;
@@ -16,11 +17,15 @@ export interface IGame extends Document {
   thumbnail_url: string;
   average_rating: number;
   complexity_weight: number;
-  categories?: Types.ObjectId[] | ICategory[];
+  category_ids?: number[];
+  categories?: ICategory[];
+  created_at: number;
+  updated_at: number;
 }
 
 const GameSchema: Schema = new Schema({
-  bgg_id: { type: String, required: true },
+  _id: { type: String, select: false },
+  bgg_id: { type: Number, required: true },
   name: { type: String, required: true },
   description: { type: String, required: true },
   year_published: { type: Number, required: true },
@@ -34,6 +39,9 @@ const GameSchema: Schema = new Schema({
   thumbnail_url: { type: String, required: true },
   average_rating: { type: Number, required: true },
   complexity_weight: { type: Number, required: true },
+  category_ids: { type: [Number], required: false },
+  created_at: { type: Date, default: Date.now, select: false },
+  updated_at: { type: Date, default: Date.now, select: false },
 });
 
 export default mongoose.model<IGame>("Game", GameSchema);

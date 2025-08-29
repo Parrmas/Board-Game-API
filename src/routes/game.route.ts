@@ -37,8 +37,6 @@ const router = Router();
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Game'
- *                 pagination:
- *                   $ref: '#/components/schemas/Pagination'
  *       400:
  *         description: Invalid limit or page parameter
  *       500:
