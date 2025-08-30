@@ -1,6 +1,9 @@
 import { populate } from "dotenv";
 import Game, { IGame } from "../models/game.model";
 import * as CategoryService from "./category.service";
+import * as DesignerService from "./designer.service";
+import * as MechanicService from "./mechanic.service";
+import { PopulateConfig, populateRelatedData } from "../utils/populate.utils";
 
 interface GamesResult {
   data: IGame[];
@@ -18,7 +21,7 @@ export const list = async (
       .sort({ name: 1 })
       .lean();
 
-    const allCategoriesIds = games.flatMap((game) => game.category_ids || []);
+    /*const allCategoriesIds = games.flatMap((game) => game.category_ids || []);
     const uniqueCategories = [...new Set(allCategoriesIds)];
     const categories = await CategoryService.get(uniqueCategories);
 
@@ -36,7 +39,30 @@ export const list = async (
         ...gameWithoutCategoryIds,
         categories: gameCategories,
       };
-    });
+    });*/
+
+    const populatedConfigs: PopulateConfig[] = [
+      {
+        field: "categories",
+        localIdsField: "category_ids",
+        service: CategoryService,
+        mapKey: "bgg_id",
+      },
+      {
+        field: "designers",
+        localIdsField: "designer_ids",
+        service: DesignerService,
+        mapKey: "bgg_id",
+      },
+      {
+        field: "mechanics",
+        localIdsField: "mechanic_ids",
+        service: MechanicService,
+        mapKey: "bgg_id",
+      },
+    ];
+
+    const data = await populateRelatedData(games, populatedConfigs);
     return {
       data,
     };

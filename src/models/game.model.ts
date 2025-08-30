@@ -39,7 +39,10 @@ const GameSchema: Schema = new Schema({
   thumbnail_url: { type: String, required: true },
   average_rating: { type: Number, required: true },
   complexity_weight: { type: Number, required: true },
-  category_ids: { type: [Number], required: false },
+  category_ids: { type: [Number], default: [] },
+  designer_ids: { type: [Number], default: [] },
+  mechanic_ids: { type: [Number], default: [] },
+  publisher_ids: { type: [Number], default: [] },
   created_at: { type: Date, default: Date.now, select: false },
   updated_at: { type: Date, default: Date.now, select: false },
 });

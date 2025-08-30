@@ -39,7 +39,20 @@ const options: swaggerJsdoc.Options = {
           properties: {
             bgg_id: { type: "string" },
             name: { type: "string" },
-            description: { type: "string" },
+          },
+        },
+        Designer: {
+          type: "object",
+          properties: {
+            bgg_id: { type: "string" },
+            name: { type: "string" },
+          },
+        },
+        Mechanic: {
+          type: "object",
+          properties: {
+            bgg_id: { type: "string" },
+            name: { type: "string" },
           },
         },
       },
