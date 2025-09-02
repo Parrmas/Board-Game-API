@@ -1,5 +1,5 @@
 import Router from "express";
-import { list, get } from "../controllers/category.controller";
+import * as CategoryController from "../controllers/category.controller";
 
 const router = Router();
 
@@ -42,7 +42,7 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/list", list);
+router.get("/list", CategoryController.list);
 
 /**
  * @swagger
@@ -74,5 +74,5 @@ router.get("/list", list);
  *       500:
  *         description: Internal server error
  */
-router.get("/get", get);
+router.get("/get", CategoryController.get);
 export default router;

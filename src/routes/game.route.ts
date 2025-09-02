@@ -1,33 +1,99 @@
-import Router from "express";
-import { list } from "../controllers/game.controller";
+import express from "express";
+import * as GameController from "../controllers/game.controller";
 
-const router = Router();
+const router = express.Router();
 
 /**
  * @swagger
- * /games/list:
+ * /games:
  *   get:
- *     summary: Get all games with optional limit
+ *     summary: Get list of games with filtering and pagination
  *     tags: [Games]
  *     parameters:
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *           minimum: 1
- *           maximum: 100
  *           default: 10
- *         description: Maximum number of games to return
+ *         description: Number of games to return
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
- *           minimum: 1
  *           default: 1
- *         description: Page number for pagination
+ *         description: Page number
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Filter by game name (case-insensitive partial match)
+ *       - in: query
+ *         name: min_players
+ *         schema:
+ *           type: integer
+ *         description: Minimum number of players
+ *       - in: query
+ *         name: max_players
+ *         schema:
+ *           type: integer
+ *         description: Maximum number of players
+ *       - in: query
+ *         name: min_playtime
+ *         schema:
+ *           type: integer
+ *         description: Minimum playtime in minutes
+ *       - in: query
+ *         name: max_playtime
+ *         schema:
+ *           type: integer
+ *         description: Maximum playtime in minutes
+ *       - in: query
+ *         name: min_rating
+ *         schema:
+ *           type: number
+ *           format: float
+ *         description: Minimum average rating
+ *       - in: query
+ *         name: max_rating
+ *         schema:
+ *           type: number
+ *           format: float
+ *         description: Maximum average rating
+ *       - in: query
+ *         name: min_complexity
+ *         schema:
+ *           type: number
+ *           format: float
+ *         description: Minimum complexity weight
+ *       - in: query
+ *         name: max_complexity
+ *         schema:
+ *           type: number
+ *           format: float
+ *         description: Maximum complexity weight
+ *       - in: query
+ *         name: categories
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of category bbg_ids
+ *       - in: query
+ *         name: mechanics
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of mechanic bbg_ids
+ *       - in: query
+ *         name: designers
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of designer bbg_ids
+ *       - in: query
+ *         name: publishers
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of publisher bbg_ids
  *     responses:
  *       200:
- *         description: List of games with pagination info
+ *         description: List of games
  *         content:
  *           application/json:
  *             schema:
@@ -37,11 +103,17 @@ const router = Router();
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Game'
+ *                 total:
+ *                   type: integer
+ *                 page:
+ *                   type: integer
+ *                 totalPages:
+ *                   type: integer
  *       400:
- *         description: Invalid limit or page parameter
+ *         description: Invalid query parameters
  *       500:
  *         description: Internal server error
  */
-router.get("/list", list);
+router.get("/", GameController.list);
 
 export default router;

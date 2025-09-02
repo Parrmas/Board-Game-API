@@ -10,7 +10,6 @@ export interface PopulateConfig {
 }
 
 // items = main data , configs = data to populate
-// Get Unique Ids for each config
 export const populateRelatedData = async (
   items: any[],
   configs: PopulateConfig[],
@@ -41,7 +40,6 @@ export const populateRelatedData = async (
     });
     dataMaps.set(config.localIdsField, { map, field: config.field });
   });
-  console.log(dataMaps);
   return items.map((item) => {
     const populatedItem = { ...item };
 

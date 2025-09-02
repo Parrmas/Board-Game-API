@@ -1,5 +1,8 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 import { ICategory } from "./category.model";
+import { IDesigner } from "./designer.model";
+import { IMechanic } from "./mechanic.model";
+import { IPublisher } from "./publisher.model";
 
 export interface IGame extends Document {
   _id: string;
@@ -7,8 +10,8 @@ export interface IGame extends Document {
   name: string;
   description: string;
   year_published: number;
-  min_player: number;
-  max_player: number;
+  min_players: number;
+  max_players: number;
   playing_time: number;
   min_playtime: number;
   max_playtime: number;
@@ -19,6 +22,12 @@ export interface IGame extends Document {
   complexity_weight: number;
   category_ids?: number[];
   categories?: ICategory[];
+  mechanic_ids?: number[];
+  mechanics?: IMechanic[];
+  designer_ids?: number[];
+  designers?: IDesigner[];
+  publisher_ids?: number[];
+  publishers?: IPublisher[];
   created_at: number;
   updated_at: number;
 }
@@ -29,8 +38,8 @@ const GameSchema: Schema = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   year_published: { type: Number, required: true },
-  min_player: { type: Number, required: true },
-  max_player: { type: Number, required: true },
+  min_players: { type: Number, required: true },
+  max_players: { type: Number, required: true },
   playing_time: { type: Number, required: true },
   min_playtime: { type: Number, required: true },
   max_playtime: { type: Number, required: true },

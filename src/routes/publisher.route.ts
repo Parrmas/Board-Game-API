@@ -1,14 +1,14 @@
 import Router from "express";
-import * as MechanicController from "../controllers/mechanic.controller";
+import * as PublisherController from "../controllers/publisher.controller";
 
 const router = Router();
 
 /**
  * @swagger
- * /mechanics/list:
+ * /publishers/list:
  *   get:
- *     summary: Get all mechanics with optional limit
- *     tags: [Mechanics]
+ *     summary: Get all publishers with optional limit
+ *     tags: [Publishers]
  *     parameters:
  *       - in: query
  *         name: limit
@@ -17,7 +17,7 @@ const router = Router();
  *           minimum: 1
  *           maximum: 100
  *           default: 10
- *         description: Maximum number of mechanics to return
+ *         description: Maximum number of publishers to return
  *       - in: query
  *         name: page
  *         schema:
@@ -27,7 +27,7 @@ const router = Router();
  *         description: Page number for pagination
  *     responses:
  *       200:
- *         description: List of mechanics with pagination info
+ *         description: List of publishers with pagination info
  *         content:
  *           application/json:
  *             schema:
@@ -36,20 +36,20 @@ const router = Router();
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Mechanic'
+ *                     $ref: '#/components/schemas/Publisher'
  *       400:
  *         description: Invalid limit or page parameter
  *       500:
  *         description: Internal server error
  */
-router.get("/list", MechanicController.list);
+router.get("/list", PublisherController.list);
 
 /**
  * @swagger
- * /mechanics/get:
+ * /publishers/get:
  *   get:
- *     summary: Get mechanics using bgg_ids
- *     tags: [Mechanics]
+ *     summary: Get publishers using bgg_ids
+ *     tags: [Publishers]
  *     parameters:
  *       - in: query
  *         name: bgg_id
@@ -59,7 +59,7 @@ router.get("/list", MechanicController.list);
  *         description: Can query for multiple records using [bgg_id1], [bgg_id2],...
  *     responses:
  *       200:
- *         description: List of mechanics with pagination info
+ *         description: List of publishers with pagination info
  *         content:
  *           application/json:
  *             schema:
@@ -68,11 +68,11 @@ router.get("/list", MechanicController.list);
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Mechanic'
+ *                     $ref: '#/components/schemas/Publisher'
  *       400:
  *         description: Invalid limit or page parameter
  *       500:
  *         description: Internal server error
  */
-router.get("/get", MechanicController.get);
+router.get("/get", PublisherController.get);
 export default router;

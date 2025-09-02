@@ -1,8 +1,5 @@
-import Category, { ICategory } from "../models/category.model";
-
-interface CategoryResult {
-  data: ICategory[];
-}
+import Category from "../models/category.model";
+import { CategoryResult } from "../types/category.type";
 
 export const list = async (
   limit: number = 10,

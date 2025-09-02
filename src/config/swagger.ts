@@ -55,6 +55,13 @@ const options: swaggerJsdoc.Options = {
             name: { type: "string" },
           },
         },
+        Publisher: {
+          type: "object",
+          properties: {
+            bgg_id: { type: "string" },
+            name: { type: "string" },
+          },
+        },
       },
     },
   },

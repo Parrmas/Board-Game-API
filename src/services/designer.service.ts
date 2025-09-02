@@ -1,8 +1,5 @@
-import Designer, { IDesigner } from "../models/designer.model";
-
-interface DesignerResult {
-  data: IDesigner[];
-}
+import Designer from "../models/designer.model";
+import { DesignerResult } from "../types/designer.type";
 
 export const list = async (
   limit: number = 10,

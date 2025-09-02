@@ -1,8 +1,5 @@
 import Mechanic, { IMechanic } from "../models/mechanic.model";
-
-interface MechanicResult {
-  data: IMechanic[];
-}
+import { MechanicResult } from "../types/mechanic.type";
 
 export const list = async (
   limit: number = 10,
