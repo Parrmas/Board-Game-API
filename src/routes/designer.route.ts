@@ -1,7 +1,10 @@
 import Router from "express";
 import * as DesignerController from "../controllers/designer.controller";
+import { FETCH_MAX_LIMIT, FETCH_MIN_LIMIT } from "../types/designer.type";
+import { validateLimit } from "../middleware/validate.middleware";
 
 const router = Router();
+const limitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
 
 /**
  * @swagger
@@ -15,7 +18,7 @@ const router = Router();
  *         schema:
  *           type: integer
  *           minimum: 1
- *           maximum: 100
+ *           maximum: 50
  *           default: 10
  *         description: Maximum number of designers to return
  *       - in: query
@@ -42,7 +45,7 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/list", DesignerController.list);
+router.get("/list", limitValidation, DesignerController.list);
 
 /**
  * @swagger

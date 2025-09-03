@@ -1,5 +1,9 @@
-import Game from "../models/game.model";
+import { populate } from "dotenv";
+import Game, { IGame } from "../models/game.model";
+import { GamesResult, POPULATE_CONFIG } from "../types/game.type";
 import { OverallStats } from "../types/stats.type";
+import { populateRelatedData } from "../utils/populate.util";
+import gameModel from "../models/game.model";
 
 export const getOverallStats = async (): Promise<OverallStats> => {
   try {
@@ -165,5 +169,93 @@ export const getOverallStats = async (): Promise<OverallStats> => {
     return formattedResult;
   } catch (error) {
     throw new Error(`Failed to fetch overall statistics: ${error}`);
+  }
+};
+
+export const getTopRatedGames = async (
+  limit: number = 10,
+): Promise<GamesResult> => {
+  try {
+    const games = await Game.find()
+      .sort({ average_rating: -1 })
+      .limit(limit)
+      .lean();
+    const data = await populateRelatedData(games, POPULATE_CONFIG);
+
+    return { data };
+  } catch (error) {
+    throw new Error(`Failed to fetch top rated games: ${error}`);
+  }
+};
+
+export const getMostComplexGames = async (
+  limit: number = 10,
+): Promise<GamesResult> => {
+  try {
+    const games = await Game.find()
+      .sort({ complexity_weight: -1 })
+      .limit(limit)
+      .lean();
+    const data = await populateRelatedData(games, POPULATE_CONFIG);
+
+    return { data };
+  } catch (error) {
+    throw new Error(`Failed to fetch most complex games: ${error}`);
+  }
+};
+
+export const getTopGamesByCategory = async (
+  limit: number = 10,
+  category_id: number,
+): Promise<GamesResult> => {
+  try {
+    const games = await Game.find({ category_ids: category_id })
+      .sort({ average_rating: -1 })
+      .limit(limit)
+      .lean();
+    const data = await populateRelatedData(games, POPULATE_CONFIG);
+
+    return { data };
+  } catch (error) {
+    throw new Error(`Failed to fetch top games by category: ${error}`);
+  }
+};
+
+export const getTopGamesByMechanic = async (
+  limit: number = 10,
+  mechanic_id: number,
+): Promise<GamesResult> => {
+  try {
+    const games = await Game.find({ mechanic_ids: mechanic_id })
+      .sort({ average_rating: -1 })
+      .limit(limit)
+      .lean();
+    const data = await populateRelatedData(games, POPULATE_CONFIG);
+
+    return { data };
+  } catch (error) {
+    throw new Error(`Failed to fetch top games by mechanic: ${error}`);
+  }
+};
+
+export const getBestGamesForPlayers = async (
+  limit: number = 10,
+  requestedPlayerCount: number,
+): Promise<GamesResult> => {
+  try {
+    const games = await Game.find({
+      min_players: { $lte: requestedPlayerCount },
+      max_players: { $gte: requestedPlayerCount },
+    })
+      .sort({ average_rating: -1 })
+      .limit(limit)
+      .lean();
+    const data = await populateRelatedData(games, POPULATE_CONFIG);
+
+    return { data };
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch best games for ${requestedPlayerCount} players: ${error}`,
+    );
   }
 };

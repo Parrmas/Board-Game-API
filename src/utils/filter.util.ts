@@ -1,7 +1,7 @@
 import { GameFilters } from "../types/game.type";
 import Game from "../models/game.model";
 
-export const buildFilterQuery = (filters: GameFilters) => {
+export const buildFilterForOverall = (filters: GameFilters) => {
   const query: any = {};
 
   // Name filter (case-insensitive partial match)

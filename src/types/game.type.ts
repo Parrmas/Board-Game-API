@@ -5,6 +5,9 @@ import * as MechanicService from "../services/mechanic.service";
 import * as PublisherService from "../services/publisher.service";
 import { IGame } from "../models/game.model";
 
+export const FETCH_MIN_LIMIT = 1;
+export const FETCH_MAX_LIMIT = 50;
+
 export interface GameFilters {
   name?: string;
   min_players?: number;

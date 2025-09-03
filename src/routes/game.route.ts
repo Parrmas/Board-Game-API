@@ -1,11 +1,14 @@
 import express from "express";
 import * as GameController from "../controllers/game.controller";
+import { FETCH_MAX_LIMIT, FETCH_MIN_LIMIT } from "../types/game.type";
+import { validateLimit } from "../middleware/validate.middleware";
 
 const router = express.Router();
+const limitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
 
 /**
  * @swagger
- * /games:
+ * /games/list:
  *   get:
  *     summary: Get list of games with filtering and pagination
  *     tags: [Games]
@@ -15,7 +18,9 @@ const router = express.Router();
  *         schema:
  *           type: integer
  *           default: 10
- *         description: Number of games to return
+ *           minimum: 1
+ *           maximum: 50
+ *         description: Number of games to return (maximum = 50)
  *       - in: query
  *         name: page
  *         schema:
@@ -114,6 +119,6 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/", GameController.list);
+router.get("/list", limitValidation, GameController.list);
 
 export default router;

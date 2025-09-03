@@ -1,7 +1,10 @@
 import express from "express";
 import * as StatsController from "../controllers/stats.controller";
+import { FETCH_MAX_LIMIT, FETCH_MIN_LIMIT } from "../types/game.type";
+import { validateLimit } from "../middleware/validate.middleware";
 
 const router = express.Router();
+const gameLimitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
 
 /**
  * @swagger
@@ -90,5 +93,189 @@ const router = express.Router();
  *         description: Internal server error
  */
 router.get("/overall", StatsController.getOverallStats);
+
+/**
+ * @swagger
+ * /stats/top-rated:
+ *   get:
+ *     summary: Get top rated games
+ *     tags: [Statistics]
+ *     description: Returns the highest rated games
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           minimum: 1
+ *           maximum: 50
+ *         description: Number of games to return
+ *     responses:
+ *       200:
+ *         description: Top rated games retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Game'
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/top-rated", gameLimitValidation, StatsController.getTopRatedGames);
+
+/**
+ * @swagger
+ * /stats/most-complex:
+ *   get:
+ *     summary: Get most complex games
+ *     tags: [Statistics]
+ *     description: Returns games with the highest complexity weight
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           minumum: 1
+ *           maximum: 50
+ *         description: Number of games to return
+ *     responses:
+ *       200:
+ *         description: Most complex games retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Game'
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/most-complex",
+  gameLimitValidation,
+  StatsController.getMostComplexGames,
+);
+
+/**
+ * @swagger
+ * /stats/top-by-category/{category_id}:
+ *   get:
+ *     summary: Get top rated games by category
+ *     tags: [Statistics]
+ *     description: Returns the highest rated games for a specific category
+ *     parameters:
+ *       - in: path
+ *         name: category_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the category
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           minimum: 1
+ *           maximum: 50
+ *         description: Number of games to return
+ *     responses:
+ *       200:
+ *         description: Top games by category retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Game'
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/top-by-category/:category_id",
+  gameLimitValidation,
+  StatsController.getTopGamesByCategory,
+);
+
+/**
+ * @swagger
+ * /stats/top-by-mechanic/{mechanic_id}:
+ *   get:
+ *     summary: Get top rated games by mechanic
+ *     tags: [Statistics]
+ *     description: Returns the highest rated games for a specific mechanic
+ *     parameters:
+ *       - in: path
+ *         name: mechanic_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the mechanic
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           minimum: 1
+ *           maximum: 50
+ *         description: Number of games to return
+ *     responses:
+ *       200:
+ *         description: Top games by mechanic retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Game'
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/top-by-mechanic/:mechanic_id",
+  gameLimitValidation,
+  StatsController.getTopGamesByMechanic,
+);
+
+/**
+ * @swagger
+ * /stats/best-for-players/{number}:
+ *   get:
+ *     summary: Get best games for a specific number of players
+ *     tags: [Statistics]
+ *     description: Returns the highest rated games that support a specific number of players
+ *     parameters:
+ *       - in: path
+ *         name: number
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Number of players
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           minimum: 1
+ *           maximum: 50
+ *         description: Number of games to return
+ *     responses:
+ *       200:
+ *         description: Best games for players retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Game'
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/best-for-players/:number",
+  gameLimitValidation,
+  StatsController.getBestGamesForPlayers,
+);
 
 export default router;

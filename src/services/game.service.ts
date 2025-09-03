@@ -1,7 +1,7 @@
 import Game from "../models/game.model";
 import { populateRelatedData } from "../utils/populate.util";
 import { GameFilters, GamesResult, POPULATE_CONFIG } from "../types/game.type";
-import { buildFilterQuery, getFilterOptions } from "../utils/filter.util";
+import { buildFilterForOverall, getFilterOptions } from "../utils/filter.util";
 
 export const list = async (
   limit: number = 10,
@@ -10,7 +10,7 @@ export const list = async (
 ): Promise<GamesResult> => {
   try {
     const skip = (page - 1) * limit;
-    const filterQuery = buildFilterQuery(filters);
+    const filterQuery = buildFilterForOverall(filters);
 
     const games = await Game.find(filterQuery)
       .limit(limit)
