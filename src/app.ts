@@ -1,15 +1,18 @@
-import express, { Application } from "express";
 import dotenv from "dotenv";
+import fs from "fs";
+// Load env file depending on environment
+dotenv.config({ path: ".env" });
+
+if (fs.existsSync(".local.env")) {
+  dotenv.config({ path: ".local.env", override: true });
+}
+
+import express, { Application } from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import routes from "./routes";
 import connectDB from "./config/db";
 import swaggerSpec from "./config/swagger";
-
-// Load env file depending on environment
-dotenv.config({
-  path: process.env.NODE_ENV === "local" ? ".local.env" : ".env",
-});
 
 const app: Application = express();
 
