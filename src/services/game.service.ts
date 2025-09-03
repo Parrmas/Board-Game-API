@@ -10,9 +10,7 @@ export const list = async (
 ): Promise<GamesResult> => {
   try {
     const skip = (page - 1) * limit;
-    console.log("Filters: ", filters);
     const filterQuery = buildFilterQuery(filters);
-    console.log("MongoDB query: ", JSON.stringify(filterQuery, null, 2));
 
     const games = await Game.find(filterQuery)
       .limit(limit)
