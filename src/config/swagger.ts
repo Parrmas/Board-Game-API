@@ -10,7 +10,10 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: `http://localhost:${process.env.PORT || 5000}/api`,
+        url:
+          process.env.NODE_ENV === "production"
+            ? `https://board-game-api-dy10.onrender.com/api`
+            : `http://localhost:${process.env.PORT || 5000}/api`,
       },
     ],
     components: {
