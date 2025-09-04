@@ -65,7 +65,11 @@ const options: swaggerJsdoc.Options = {
       },
     },
   },
-  apis: ["./src/routes/*.ts", "./src/controllers/*.ts"],
+  apis: [
+    "./src/**/*.route.ts", // Matches all route files in any subdirectory
+    "./src/**/*.controller.ts", // Matches all controller files in any subdirectory
+    "./src/**/*.ts", // Fallback for any other files
+  ],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

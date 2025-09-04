@@ -10,7 +10,7 @@ if (fs.existsSync(".local.env")) {
 import express, { Application } from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
-import routes from "./routes";
+import routes from "./module";
 import connectDB from "./config/db";
 import swaggerSpec from "./config/swagger";
 

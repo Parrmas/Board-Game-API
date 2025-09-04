@@ -1,5 +1,5 @@
-import { GameFilters } from "../types/game.type";
-import Game from "../models/game.model";
+import { GameFilters } from "../module/game/game.type";
+import Game from "../module/game/game.model";
 
 export const buildFilterForOverall = (filters: GameFilters) => {
   const query: any = {};
