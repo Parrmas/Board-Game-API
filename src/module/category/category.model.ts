@@ -17,15 +17,4 @@ const CategorySchema: Schema = new Schema({
   created_at: { type: Date, default: Date.now, select: false },
 });
 
-// Add virtual for game count
-CategorySchema.virtual("gameCount", {
-  ref: "Game",
-  localField: "_id",
-  foreignField: "category_ids",
-  count: true,
-});
-
-// Ensure virtuals are included in toJSON output
-CategorySchema.set("toJSON", { virtuals: true });
-
 export default mongoose.model<ICategory>("Category", CategorySchema);

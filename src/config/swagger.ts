@@ -22,8 +22,8 @@ const options: swaggerJsdoc.Options = {
             name: { type: "string" },
             description: { type: "string" },
             year_published: { type: "number" },
-            min_player: { type: "number" },
-            max_player: { type: "number" },
+            min_players: { type: "number" },
+            max_players: { type: "number" },
             playing_time: { type: "number" },
             min_playtime: { type: "number" },
             max_playtime: { type: "number" },
@@ -32,6 +32,34 @@ const options: swaggerJsdoc.Options = {
             thumbnail_url: { type: "string" },
             average_rating: { type: "number" },
             complexity_weight: { type: "number" },
+            category: {
+              type: "object",
+              properties: {
+                bgg_id: { type: "string" },
+                name: { type: "string" },
+              },
+            },
+            mechanic: {
+              type: "object",
+              properties: {
+                bgg_id: { type: "string" },
+                name: { type: "string" },
+              },
+            },
+            designer: {
+              type: "object",
+              properties: {
+                bgg_id: { type: "string" },
+                name: { type: "string" },
+              },
+            },
+            publisher: {
+              type: "object",
+              properties: {
+                bgg_id: { type: "string" },
+                name: { type: "string" },
+              },
+            },
           },
         },
         Category: {

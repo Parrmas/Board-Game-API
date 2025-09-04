@@ -11,7 +11,6 @@ export const list = async (
       .limit(limit)
       .skip(skip)
       .sort({ name: 1 });
-
     return { data };
   } catch (error) {
     throw new Error(`Error fetching categories: ${error}`);
@@ -38,10 +37,9 @@ export const getPopular = async (
       {
         $lookup: {
           from: "games",
-          localField: "_id",
+          localField: "bgg_id",
           foreignField: "category_ids",
           as: "gameData",
-          pipeline: [{ $project: { _id: 1 } }],
         },
       },
       {
@@ -77,7 +75,6 @@ export const getPopular = async (
         },
       },
     ]);
-
     return {
       data: result[0]?.data || [],
       total: result[0]?.total || 0,
