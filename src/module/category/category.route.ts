@@ -114,8 +114,6 @@ router.get("/get", CategoryController.get);
  *                   items:
  *                     type: object
  *                     properties:
- *                       _id:
- *                         type: string
  *                       bgg_id:
  *                         type: number
  *                       name:

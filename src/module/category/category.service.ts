@@ -63,7 +63,7 @@ export const getPopular = async (
           data: [
             { $skip: skip },
             { $limit: limit },
-            { $project: { gameData: 0 } },
+            { $project: { _id: 0, bgg_id: 1, name: 1, gameCount: 1 } },
           ],
           total: [{ $count: "count" }],
         },
@@ -77,7 +77,7 @@ export const getPopular = async (
     ]);
     return {
       data: result[0]?.data || [],
-      total: result[0]?.total || 0,
+      totalCategory: result[0]?.total || 0,
     };
   } catch (error) {
     throw new Error(`Error fetching popular categories: ${error}`);

@@ -9,5 +9,5 @@ export interface CategoryResult {
 
 export interface PopularCategoryResult {
   data: Array<ICategory & { gameCount: number }>;
-  total: number;
+  totalCategory: number;
 }
