@@ -27,3 +27,13 @@
    ```bash
    git clone https://github.com/Parrmas/Board-Game-API.git
    cd Board-Game-API
+2. Install dependencies:
+   ```bash
+   npm install
+3. Start the development server:
+   ```bash
+   npm run dev
+Build for Production
+   ```bash
+   npm run build
+   npm start
