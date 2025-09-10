@@ -74,3 +74,25 @@ export const list = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const get = async (req: Request, res: Response) => {
+  try {
+    const params = req.params.bgg_id as string;
+    if (!params) {
+      return res.status(400).json({ error: "bgg_id parameter is required" });
+    }
+    const ids = params
+      .split(",")
+      .map((id) => parseInt(id.trim()))
+      .filter((id) => !isNaN(id));
+
+    if (ids.length === 0) {
+      return res.status(400).json({ error: "Invalid bgg_id format" });
+    }
+
+    const result = await GameService.get(ids);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ Error: error });
+  }
+};

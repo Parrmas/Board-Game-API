@@ -49,20 +49,21 @@ router.get("/list", limitValidation, MechanicController.list);
 
 /**
  * @swagger
- * /mechanics/get:
+ * /mechanics/get/{bgg_id}:
  *   get:
  *     summary: Get mechanics using bgg_ids
  *     tags: [Mechanics]
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: bgg_id
+ *         required: true
  *         schema:
  *           type: string
  *           default: 0
  *         description: Can query for multiple records using [bgg_id1], [bgg_id2],...
  *     responses:
  *       200:
- *         description: List of mechanics with pagination info
+ *         description: List of mechanics based on inserted bgg_ids
  *         content:
  *           application/json:
  *             schema:
@@ -77,5 +78,5 @@ router.get("/list", limitValidation, MechanicController.list);
  *       500:
  *         description: Internal server error
  */
-router.get("/get", MechanicController.get);
+router.get("/get/:bgg_id", MechanicController.get);
 export default router;
