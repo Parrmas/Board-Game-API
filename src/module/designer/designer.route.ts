@@ -49,20 +49,21 @@ router.get("/list", limitValidation, DesignerController.list);
 
 /**
  * @swagger
- * /designers/get:
+ * /designers/get/{bgg_id}:
  *   get:
  *     summary: Get designers using bgg_ids
  *     tags: [Designers]
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: bgg_id
+ *         required: true
  *         schema:
  *           type: string
  *           default: 0
  *         description: Can query for multiple records using [bgg_id1], [bgg_id2],...
  *     responses:
  *       200:
- *         description: List of designers with pagination info
+ *         description: List of designers based on inserted bgg_ids
  *         content:
  *           application/json:
  *             schema:
@@ -71,11 +72,11 @@ router.get("/list", limitValidation, DesignerController.list);
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Category'
+ *                     $ref: '#/components/schemas/Designer'
  *       400:
  *         description: Invalid limit or page parameter
  *       500:
  *         description: Internal server error
  */
-router.get("/get", DesignerController.get);
+router.get("/get/:bgg_id", DesignerController.get);
 export default router;

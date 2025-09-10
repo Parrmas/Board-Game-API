@@ -10,7 +10,8 @@ export const list = async (
     const data = await Publisher.find()
       .limit(limit)
       .skip(skip)
-      .sort({ name: 1 });
+      .sort({ name: 1 })
+      .lean();
 
     return { data };
   } catch (error) {
@@ -20,7 +21,7 @@ export const list = async (
 
 export const get = async (bgg_ids: number[]): Promise<PublisherResult> => {
   try {
-    const data = await Publisher.find({ bgg_id: { $in: bgg_ids } });
+    const data = await Publisher.find({ bgg_id: { $in: bgg_ids } }).lean();
     return { data };
   } catch (error) {
     throw new Error(`Error fetching publishers: ${error}`);

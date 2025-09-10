@@ -30,4 +30,12 @@ export const list = async (
   }
 };
 
-export { getFilterOptions };
+export const get = async (bgg_ids: number[]): Promise<GamesResult> => {
+  try {
+    const games = await Game.find({ bgg_id: { $in: bgg_ids } }).lean();
+    const data = await populateRelatedData(games, POPULATE_CONFIG);
+    return { data };
+  } catch (error) {
+    throw new Error(`Error fetching games: ${error}`);
+  }
+};

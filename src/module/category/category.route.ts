@@ -49,20 +49,21 @@ router.get("/list", limitValidation, CategoryController.list);
 
 /**
  * @swagger
- * /categories/get:
+ * /categories/get/{bgg_id}:
  *   get:
  *     summary: Get categories using bgg_ids
  *     tags: [Categories]
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: bgg_id
+ *         required: true
  *         schema:
  *           type: string
  *           default: 0
  *         description: Can query for multiple records using [bgg_id1], [bgg_id2],...
  *     responses:
  *       200:
- *         description: List of categories with pagination info
+ *         description: List of categories based on inserted bgg_ids
  *         content:
  *           application/json:
  *             schema:
@@ -77,7 +78,7 @@ router.get("/list", limitValidation, CategoryController.list);
  *       500:
  *         description: Internal server error
  */
-router.get("/get", CategoryController.get);
+router.get("/get/:bgg_id", CategoryController.get);
 
 /**
  * @swagger

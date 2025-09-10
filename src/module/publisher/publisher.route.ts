@@ -49,20 +49,21 @@ router.get("/list", limitValidation, PublisherController.list);
 
 /**
  * @swagger
- * /publishers/get:
+ * /publishers/get/{bgg_id}:
  *   get:
  *     summary: Get publishers using bgg_ids
  *     tags: [Publishers]
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: bgg_id
+ *         required: bgg_id
  *         schema:
  *           type: string
  *           default: 0
  *         description: Can query for multiple records using [bgg_id1], [bgg_id2],...
  *     responses:
  *       200:
- *         description: List of publishers with pagination info
+ *         description: List of publishers based on inserted bgg_ids
  *         content:
  *           application/json:
  *             schema:
@@ -77,5 +78,5 @@ router.get("/list", limitValidation, PublisherController.list);
  *       500:
  *         description: Internal server error
  */
-router.get("/get", PublisherController.get);
+router.get("/get/:bgg_id", PublisherController.get);
 export default router;

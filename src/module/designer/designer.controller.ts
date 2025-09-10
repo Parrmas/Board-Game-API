@@ -26,13 +26,11 @@ export const list = async (req: Request, res: Response) => {
 
 export const get = async (req: Request, res: Response) => {
   try {
-    const query = req.query.bgg_id as string;
-    if (!query) {
-      return res
-        .status(400)
-        .json({ error: "bgg_id query parameter is required" });
+    const params = req.params.bgg_id as string;
+    if (!params) {
+      return res.status(400).json({ error: "bgg_id parameter is required" });
     }
-    const ids = query
+    const ids = params
       .split(",")
       .map((id) => parseInt(id.trim()))
       .filter((id) => !isNaN(id));

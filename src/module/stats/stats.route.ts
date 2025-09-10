@@ -160,14 +160,14 @@ router.get(
 
 /**
  * @swagger
- * /stats/best-for-players/{number}:
+ * /stats/best-for-players/{player_count}:
  *   get:
  *     summary: Get best games for a specific number of players
  *     tags: [Statistics]
  *     description: Returns the highest rated games that support a specific number of players
  *     parameters:
  *       - in: path
- *         name: number
+ *         name: player_count
  *         required: true
  *         schema:
  *           type: integer
@@ -193,7 +193,7 @@ router.get(
  *         description: Internal server error
  */
 router.get(
-  "/best-for-players/:number",
+  "/best-for-players/:player_count",
   gameLimitValidation,
   StatsController.getBestGamesForPlayers,
 );

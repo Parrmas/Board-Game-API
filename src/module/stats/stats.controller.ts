@@ -33,7 +33,7 @@ export const getMostComplexGames = async (req: Request, res: Response) => {
 export const getBestGamesForPlayers = async (req: Request, res: Response) => {
   try {
     const limit = parseInt(req.query.limit as string) || 10;
-    const requestedPlayerCount = parseInt(req.params.number_players as string);
+    const requestedPlayerCount = parseInt(req.params.player_count as string);
     const result = await StatsService.getBestGamesForPlayers(
       limit,
       requestedPlayerCount,
@@ -41,7 +41,7 @@ export const getBestGamesForPlayers = async (req: Request, res: Response) => {
     res.json(result);
   } catch (error) {
     res.status(500).json({
-      error: `Failed to retrieve best games for ${req.query.number_players}`,
+      error: `Failed to retrieve best games for ${req.query.player_count}`,
     });
   }
 };

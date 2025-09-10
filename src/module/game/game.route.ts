@@ -108,17 +108,44 @@ const limitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Game'
- *                 total:
- *                   type: integer
- *                 page:
- *                   type: integer
- *                 totalPages:
- *                   type: integer
  *       400:
  *         description: Invalid query parameters
  *       500:
  *         description: Internal server error
  */
 router.get("/list", limitValidation, GameController.list);
+
+/**
+ * @swagger
+ * /games/get/{bgg_id}:
+ *   get:
+ *     summary: Get games using bgg_ids
+ *     tags: [Games]
+ *     parameters:
+ *       - in: path
+ *         name: bgg_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           default: 0
+ *         description: Can query for multiple records using [bgg_id1], [bgg_id2],...
+ *     responses:
+ *       200:
+ *         description: List of games based on inserted bgg_ids
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Game'
+ *       400:
+ *         description: Invalid limit or page parameter
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/get/:bgg_id", GameController.get);
 
 export default router;

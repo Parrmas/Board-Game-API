@@ -10,7 +10,8 @@ export const list = async (
     const data = await Category.find()
       .limit(limit)
       .skip(skip)
-      .sort({ name: 1 });
+      .sort({ name: 1 })
+      .lean();
     return { data };
   } catch (error) {
     throw new Error(`Error fetching categories: ${error}`);
@@ -19,7 +20,7 @@ export const list = async (
 
 export const get = async (bgg_ids: number[]): Promise<CategoryResult> => {
   try {
-    const data = await Category.find({ bgg_id: { $in: bgg_ids } });
+    const data = await Category.find({ bgg_id: { $in: bgg_ids } }).lean();
     return { data };
   } catch (error) {
     throw new Error(`Error fetching categories: ${error}`);
