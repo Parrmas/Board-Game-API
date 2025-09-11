@@ -5,10 +5,12 @@ import mechanicRoutes from "./mechanic/mechanic.route";
 import designerRoutes from "./designer/designer.route";
 import publisherRoutes from "./publisher/publisher.route";
 import statsRoutes from "./stats/stats.route";
+import authRoutes from "./auth/auth.route";
 
 const router = Router();
 
 // Mount feature routes
+router.use("/auth", authRoutes);
 router.use("/stats", statsRoutes);
 router.use("/games", gameRoutes);
 router.use("/categories", categoryRoutes);
