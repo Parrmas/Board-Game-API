@@ -76,7 +76,6 @@ export const getUser = async (req: Request, res: Response) => {
 export const getProfileGames = async (req: Request, res: Response) => {
   try {
     const savedGames = await AuthService.getSavedGame();
-    console.log("Check at controller: ", savedGames);
     res.json({
       success: true,
       data: savedGames,
