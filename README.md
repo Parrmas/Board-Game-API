@@ -14,29 +14,7 @@
 
 ---
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v16+ recommended)
-- npm (comes with Node.js)
-
-### Installation
-
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/Parrmas/Board-Game-API.git
-   cd Board-Game-API
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ````bash
-   npm run dev
-   Build for Production
-   ```bash
-   npm run build
-   npm start
-   ````
+🚀 Deployment on Render
+Demo will be at: 
+- SwaggerUI: https://the-border-bg-api.onrender.com/docs/
+- API root: https://the-border-bg-api.onrender.com/api/
