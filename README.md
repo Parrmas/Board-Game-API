@@ -14,7 +14,13 @@
 
 ---
 
-🚀 Deployment on Render
+##🚀 Deployment on Render
 Demo will be at: 
 - SwaggerUI: https://the-border-bg-api.onrender.com/docs/
 - API root: https://the-border-bg-api.onrender.com/api/
+
+---
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
