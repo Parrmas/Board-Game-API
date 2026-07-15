@@ -1,19 +1,12 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { IUser, ILoginRequest, IAuthResponse, JwtPayload } from "./auth.type";
+import { ILoginRequest, IAuthResponse, JwtPayload } from "./auth.type";
+import User, { IUser } from "./auth.model";
 import Game, { IGame } from "../game/game.model";
 import { populateRelatedData } from "../../utils/populate.util";
 import { POPULATE_CONFIG } from "../game/game.type";
 
 // Hardcoded user data
-const hardcodedUser: IUser = {
-  id: "1",
-  username: "boardgame_enthusiast",
-  email: "user@boardgamelib.com",
-  password: "$2b$10$ZEJkGtYJhSH0OXT1IwpqnuHCW/lK.2/yKyJxcnBx/p2.oy3EBq2Bi", // "password123" hashed
-  savedGameIds: [35863, 313, 295564, 293014, 367375],
-  isLoggedIn: false,
-};
 
 // Maps to store Tokens
 const activeTokens = new Set<string>();
@@ -34,32 +27,31 @@ export const generateToken = async (payload: JwtPayload): Promise<string> => {
 export const login = async (
   loginData: ILoginRequest,
 ): Promise<IAuthResponse> => {
+  const user = await User.findOne({ email: loginData.email }).select("+password");
+  // Check if user exists
+  if (!user) {
+    throw new Error("Invalid email or password");
+  }
   // Check if user is already logged in
-  if (hardcodedUser.isLoggedIn) {
+  if (user.isLoggedIn) {
     throw new Error("User is already logged in");
   }
-
-  // Verify credentials against hardcoded user
-  if (loginData.email !== hardcodedUser.email) {
-    throw new Error("Invalid email or password 1");
-  }
-
   // Check password (using bcrypt compare for the hashed password)
   const isPasswordValid = await bcrypt.compare(
     loginData.password,
-    hardcodedUser.password,
+    user.password,
   );
   if (!isPasswordValid) {
-    throw new Error("Invalid email or password 2");
+    throw new Error("Invalid email or password");
   }
 
   // Update login status
-  hardcodedUser.isLoggedIn = true;
+  user.isLoggedIn = true;
 
   // Generate token
   const token = await generateToken({
-    userId: hardcodedUser.id,
-    email: hardcodedUser.email,
+    userId: user.id,
+    email: user.email,
   });
 
   // Store Active Tokens
@@ -74,7 +66,7 @@ export const logout = (token: string) => {
   const decoded = jwt.decode(token) as jwt.JwtPayload;
   if (decoded && decoded.exp) {
     tokenBlacklist.set(token, decoded.exp);
-    hardcodedUser.isLoggedIn = false;
+    User.findByIdAndUpdate(decoded.userId, { isLoggedIn: false });
   }
 };
 
@@ -95,22 +87,24 @@ export const verifyToken = async (token: string): Promise<JwtPayload> => {
   }
 };
 
-export const getHardcodedUser = async (): Promise<
-  Omit<IUser, "savedGameIds" | "isLoggedIn">
-> => {
-  const { savedGameIds, isLoggedIn, ...userWithoutSensitiveData } =
-    hardcodedUser;
-  return { ...userWithoutSensitiveData };
+export const getUserById = async (userId: string) => {
+  const user = await User.findById(userId).lean();
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return user;
 };
 
-export const getSavedGame = async (): Promise<IGame[]> => {
+export const getSavedGame = async (userId: string): Promise<IGame[]> => {
+  const user = await User.findById(userId).lean();
   const data = await Game.find({
-    bgg_id: { $in: hardcodedUser.savedGameIds },
+    bgg_id: { $in: user?.fav_games_ids  || [] },
   }).lean();
   const games = await populateRelatedData(data, POPULATE_CONFIG);
   return [...games];
 };
 
-export const isUserLoggedIn = async (): Promise<boolean> => {
-  return hardcodedUser.isLoggedIn;
+export const isUserLoggedIn = async (userId: string): Promise<boolean> => {
+  const user = await User.findById(userId).lean();
+  return user?.isLoggedIn ?? false;
 };

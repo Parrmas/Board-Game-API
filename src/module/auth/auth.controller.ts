@@ -33,7 +33,7 @@ export const logout = async (req: AuthenticatedRequest, res: Response) => {
       });
     }
 
-    AuthService.logout(token);
+    await AuthService.logout(token);
 
     res.json({
       success: true,
@@ -47,23 +47,20 @@ export const logout = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-export const getUser = async (req: Request, res: Response) => {
+export const getUser = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const user = await AuthService.getHardcodedUser();
-
-    if (await AuthService.isUserLoggedIn()) {
-      return res.status(400).json({
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({
         success: false,
-        message: "User is already logged in",
+        message: "Unauthorized",
       });
     }
-
-    // Return user without sensitive data
-    const { ...userData } = user;
+    const user = await AuthService.getUserById(userId);
 
     res.json({
       success: true,
-      data: userData,
+      data: user,
     });
   } catch (error: any) {
     res.status(500).json({
@@ -73,9 +70,14 @@ export const getUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getProfileGames = async (req: Request, res: Response) => {
+export const getProfileGames = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const savedGames = await AuthService.getSavedGame();
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const savedGames = await AuthService.getSavedGame(userId);
     res.json({
       success: true,
       data: savedGames,

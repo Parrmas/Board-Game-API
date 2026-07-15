@@ -1,12 +1,3 @@
-export interface IUser {
-  id: string;
-  username: string;
-  email: string;
-  password: string;
-  savedGameIds: number[];
-  isLoggedIn: boolean;
-}
-
 export interface ILoginRequest {
   email: string;
   password: string;
