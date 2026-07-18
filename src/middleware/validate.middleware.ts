@@ -31,3 +31,35 @@ export const validateQueryNotEmpty = (queryName: string) => {
     }
   };
 };
+
+export const validateRegisterBody = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { email, password, username, firstName, lastName } = req.body;
+
+  if (!email || !password || !username || !firstName || !lastName) {
+    return res.status(400).json({
+      success: false,
+      message: "email, password, username, firstName, and lastName are all required",
+    });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid email format",
+    });
+  }
+
+  if (typeof password !== "string" || password.length < 8) {
+    return res.status(400).json({
+      success: false,
+      message: "Password must be at least 8 characters long",
+    });
+  }
+
+  next();
+};

@@ -1,14 +1,49 @@
 import { Router } from "express";
 import * as AuthController from "./auth.controller";
 import { authenticateToken } from "../../middleware/auth.middleware";
+import { validateRegisterBody } from "../../middleware/validate.middleware";
 
 const router = Router();
 
 /**
  * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RegisterRequest'
+ *     responses:
+ *       201:
+ *         description: Successfully registered, returns a JWT token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
+ *       400:
+ *         description: Missing or invalid fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       409:
+ *         description: Email or username already registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.post("/register", validateRegisterBody, AuthController.register);
+
+/**
+ * @swagger
  * /auth/get-token:
  *   post:
- *     summary: Get JWT token from a hardcoded user
+ *     summary: Get JWT token for an existing user
  *     tags: [Authentication]
  *     requestBody:
  *       required: true

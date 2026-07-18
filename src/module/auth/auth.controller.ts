@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import * as AuthService from "./auth.service";
-import { ILoginRequest } from "./auth.type";
+import { ILoginRequest, IRegisterRequest } from "./auth.type";
 import { AuthenticatedRequest } from "../../middleware/auth.middleware";
 
 export const login = async (req: Request, res: Response) => {
@@ -83,7 +83,24 @@ export const getProfileGames = async (req: AuthenticatedRequest, res: Response) 
       data: savedGames,
     });
   } catch (error: any) {
-    res.status(500).json({
+    if (error.message === "User not found") {
+      return res.status(404).json({ success: false, message: error.message });
+    }
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const register = async (req: Request, res: Response) => {
+  try {
+    const registerData: IRegisterRequest = req.body;
+    const result = await AuthService.register(registerData);
+
+    res.status(201).json({
+      success: true,
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(409).json({
       success: false,
       message: error.message,
     });

@@ -17,3 +17,11 @@ export interface ProfileGameResponse {
   data?: number[];
   message?: string;
 }
+
+export interface IRegisterRequest {
+  email: string;
+  password: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+}
