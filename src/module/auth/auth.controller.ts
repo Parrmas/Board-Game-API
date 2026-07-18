@@ -106,3 +106,47 @@ export const register = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const addProfileGame = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const bggId = parseInt(req.params.bgg_id, 10);
+    if (isNaN(bggId)) {
+      return res.status(400).json({ success: false, message: "Invalid bgg_id" });
+    }
+
+    const data = await AuthService.addSavedGame(userId, bggId);
+    res.json({ success: true, data });
+  } catch (error: any) {
+    if (error.message === "User not found") {
+      return res.status(404).json({ success: false, message: error.message });
+    }
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const removeProfileGame = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const bggId = parseInt(req.params.bgg_id, 10);
+    if (isNaN(bggId)) {
+      return res.status(400).json({ success: false, message: "Invalid bgg_id" });
+    }
+
+    const data = await AuthService.removeSavedGame(userId, bggId);
+    res.json({ success: true, data });
+  } catch (error: any) {
+    if (error.message === "User not found") {
+      return res.status(404).json({ success: false, message: error.message });
+    }
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

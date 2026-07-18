@@ -144,4 +144,56 @@ router.get("/user", AuthController.getUser);
  */
 router.get("/profile-games", authenticateToken, AuthController.getProfileGames);
 
+/**
+ * @swagger
+ * /auth/add-favorite-game/{bgg_id}:
+ *   post:
+ *     summary: Add a game to the logged-in user's saved games
+ *     tags: [Authentication]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bgg_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Updated list of saved game bgg_ids
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ProfileGamesResponse'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
+router.post("/profile-games/:bgg_id", authenticateToken, AuthController.addProfileGame);
+
+/**
+ * @swagger
+ * /auth/remove-favorite-game/{bgg_id}:
+ *   delete:
+ *     summary: Remove a game from the logged-in user's saved games
+ *     tags: [Authentication]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bgg_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Updated list of saved game bgg_ids
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ProfileGamesResponse'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
+router.delete("/profile-games/:bgg_id", authenticateToken, AuthController.removeProfileGame);
+
 export default router;

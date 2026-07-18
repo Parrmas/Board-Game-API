@@ -149,3 +149,43 @@ export const register = async (
 
   return { message: "User registered successfully" } as unknown as IAuthResponse;
 };
+
+export const addSavedGame = async (
+  userId: string,
+  bggId: number,
+): Promise<IGame[]> => {
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { $addToSet: { fav_games_ids: bggId } },
+    { new: true },
+  ).lean();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const data = await Game.find({
+    bgg_id: { $in: user?.fav_games_ids  || [] },
+  }).lean();
+  const games = await populateRelatedData(data, POPULATE_CONFIG);
+  return [...games];
+};
+
+export const removeSavedGame = async (
+  userId: string,
+  bggId: number,
+): Promise<IGame[]> => {
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { $pull: { fav_games_ids: bggId } },
+    { new: true },
+  ).lean();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const data = await Game.find({
+    bgg_id: { $in: user?.fav_games_ids  || [] },
+  }).lean();
+  const games = await populateRelatedData(data, POPULATE_CONFIG);
+  return [...games];
+};
