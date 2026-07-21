@@ -121,7 +121,7 @@ router.post("/invalidate-token", authenticateToken, AuthController.logout);
  *             schema:
  *               $ref: '#/components/responses/AlreadyLoggedInError'
  */
-router.get("/user", AuthController.getUser);
+router.get("/user", authenticateToken, AuthController.getUser);
 
 /**
  * @swagger

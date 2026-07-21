@@ -15,11 +15,11 @@ export const buildFilterForOverall = (filters: GameFilters) => {
 
     // Games where min_player <= requested max_players
     if (filters.max_players !== undefined) {
-      query.$and.push({ min_players: { $gte: filters.min_players } }); // Use min_player (singular)
+      query.$and.push({ min_players: { $lte: filters.max_players } }); // Use min_player (singular)
     }
     // Games where max_player >= requested min_players
     if (filters.min_players !== undefined) {
-      query.$and.push({ max_players: { $lte: filters.max_players } }); // Use max_player (singular)
+      query.$and.push({ max_players: { $gte: filters.min_players } }); // Use max_player (singular)
     }
   }
 
@@ -92,8 +92,8 @@ export const getFilterOptions = async () => {
           {
             $group: {
               _id: null,
-              minPlayers: { $min: "$min_player" },
-              maxPlayers: { $max: "$max_player" },
+              minPlayers: { $min: "$min_players" },
+              maxPlayers: { $max: "$max_players" },
             },
           },
         ]),

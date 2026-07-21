@@ -41,7 +41,7 @@ export const getBestGamesForPlayers = async (req: Request, res: Response) => {
     res.json(result);
   } catch (error) {
     res.status(500).json({
-      error: `Failed to retrieve best games for ${req.query.player_count}`,
+      error: `Failed to retrieve best games for ${req.params.player_count}`,
     });
   }
 };
