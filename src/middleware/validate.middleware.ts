@@ -29,6 +29,7 @@ export const validateQueryNotEmpty = (queryName: string) => {
         error: `Query parameter '${queryName}' is required and cannot be empty.`,
       });
     }
+    next();
   };
 };
 
