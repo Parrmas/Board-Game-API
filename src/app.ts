@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import fs from "fs";
+import { Request, Response, NextFunction } from "express";
 // Load env file depending on environment
 dotenv.config({ path: ".env" });
 
@@ -25,6 +26,17 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use("/api", routes);
+
+// 404 fallback - no route matched
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ success: false, message: "Route not found" });
+});
+
+// Error handling middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err);
+  res.status(500).json({ success: false, message: "Internal Server Error" });
+});
 
 // DB Connection
 const mongoUri = process.env.MONGO_URI || "";

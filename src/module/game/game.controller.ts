@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import * as GameService from "./game.service";
 import { GameFilters } from "./game.type";
+import { sendError, sendSuccess } from "../../utils/response.util";
+import { getFilterOptions as getFilterOptionsService } from "../../utils/filter.util";
 
 export const list = async (req: Request, res: Response) => {
   try {
@@ -56,22 +58,18 @@ export const list = async (req: Request, res: Response) => {
     });
 
     if (limit < 1 || limit > 100) {
-      return res.status(400).json({
-        error: "Limit must be between 1 and 100",
-      });
+      return sendError(res, 400, "Limit must be between 1 and 100");
     }
 
     if (page < 1) {
-      return res.status(400).json({
-        error: "Page must be at least 1",
-      });
+      return sendError(res, 400, "Page must be at least 1");
     }
 
     // Pass filters to the service
     const result = await GameService.list(limit, page, filters);
-    res.json(result);
+    sendSuccess(res, result);
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    sendError(res, 500, "Internal server error");
   }
 };
 
@@ -79,7 +77,7 @@ export const get = async (req: Request, res: Response) => {
   try {
     const params = req.params.bgg_id as string;
     if (!params) {
-      return res.status(400).json({ error: "bgg_id parameter is required" });
+      return sendError(res, 400, "bgg_id parameter is required");
     }
     const ids = params
       .split(",")
@@ -87,12 +85,22 @@ export const get = async (req: Request, res: Response) => {
       .filter((id) => !isNaN(id));
 
     if (ids.length === 0) {
-      return res.status(400).json({ error: "Invalid bgg_id format" });
+      return sendError(res, 400, "Invalid bgg_id format");
     }
 
     const result = await GameService.get(ids);
-    res.json(result);
+    sendSuccess(res, result);
   } catch (error) {
-    res.status(500).json({ Error: error });
+    sendError(res, 500, "Internal server error");
+  }
+};
+
+export const getFilterOptions = async (req: Request, res: Response) => {
+  try {
+    const result = await getFilterOptionsService();
+    sendSuccess(res, result);
+  } catch (error) {
+    console.error(error);
+    sendError(res, 500, "Failed to fetch filter options");
   }
 };

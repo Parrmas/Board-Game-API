@@ -117,6 +117,50 @@ router.get("/list", limitValidation, GameController.list);
 
 /**
  * @swagger
+ * /games/filter-options:
+ *   get:
+ *     summary: Get min/max ranges for player count, playtime, rating, and complexity
+ *     tags: [Games]
+ *     responses:
+ *       200:
+ *         description: Filter option ranges
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     players:
+ *                       type: object
+ *                       properties:
+ *                         min: { type: number }
+ *                         max: { type: number }
+ *                     playtime:
+ *                       type: object
+ *                       properties:
+ *                         min: { type: number }
+ *                         max: { type: number }
+ *                     rating:
+ *                       type: object
+ *                       properties:
+ *                         min: { type: number }
+ *                         max: { type: number }
+ *                     complexity:
+ *                       type: object
+ *                       properties:
+ *                         min: { type: number }
+ *                         max: { type: number }
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/filter-options", GameController.getFilterOptions);
+
+/**
+ * @swagger
  * /games/get/{bgg_id}:
  *   get:
  *     summary: Get games using bgg_ids

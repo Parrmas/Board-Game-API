@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import * as StatsService from "./stats.service";
+import { sendError, sendSuccess } from "../../utils/response.util";
 
 export const getOverallStats = async (req: Request, res: Response) => {
   try {
     const stats = await StatsService.getOverallStats();
-    res.json(stats);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve statistics" });
+    sendSuccess(res, stats);
+  } catch (error: any) {
+    sendError(res, 500, error.message);
   }
 };
 
@@ -14,9 +15,9 @@ export const getTopRatedGames = async (req: Request, res: Response) => {
   try {
     const limit = parseInt(req.query.limit as string) || 10;
     const result = await StatsService.getTopRatedGames(limit);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve top rated games" });
+    sendSuccess(res, result);
+  } catch (error: any) {
+    sendError(res, 500, error.message);
   }
 };
 
@@ -24,9 +25,9 @@ export const getMostComplexGames = async (req: Request, res: Response) => {
   try {
     const limit = parseInt(req.query.limit as string) || 10;
     const result = await StatsService.getMostComplexGames(limit);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve most complex games" });
+    sendSuccess(res, result);
+  } catch (error: any) {
+    sendError(res, 500, error.message);
   }
 };
 
@@ -38,10 +39,8 @@ export const getBestGamesForPlayers = async (req: Request, res: Response) => {
       limit,
       requestedPlayerCount,
     );
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({
-      error: `Failed to retrieve best games for ${req.params.player_count}`,
-    });
+    sendSuccess(res, result);
+  } catch (error: any) {
+    sendError(res, 500, error.message);
   }
 };
