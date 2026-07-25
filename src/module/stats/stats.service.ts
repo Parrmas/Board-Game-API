@@ -2,6 +2,7 @@ import Game, { IGame } from "../game/game.model";
 import { GamesResult, POPULATE_CONFIG } from "../game/game.type";
 import { OverallStats } from "./stats.type";
 import { populateRelatedData } from "../../utils/populate.util";
+import { AppError } from "../../utils/appError.util";
 
 export const getOverallStats = async (): Promise<OverallStats> => {
   try {
@@ -166,7 +167,8 @@ export const getOverallStats = async (): Promise<OverallStats> => {
 
     return formattedResult;
   } catch (error) {
-    throw new Error(`Failed to fetch overall statistics: ${error}`);
+    console.log("Error fetching overall statistics: ", error);
+    throw new AppError("Failed to fetch overall statistics", 500);
   }
 };
 
@@ -182,7 +184,8 @@ export const getTopRatedGames = async (
 
     return { data };
   } catch (error) {
-    throw new Error(`Failed to fetch top rated games: ${error}`);
+    console.log("Error fetching top rated games: ", error);
+    throw new AppError("Failed to fetch top rated games", 500);
   }
 };
 
@@ -198,7 +201,8 @@ export const getMostComplexGames = async (
 
     return { data };
   } catch (error) {
-    throw new Error(`Failed to fetch most complex games: ${error}`);
+    console.log("Error fetching most complex games: ", error);
+    throw new AppError("Failed to fetch most complex games", 500);
   }
 };
 
@@ -218,8 +222,9 @@ export const getBestGamesForPlayers = async (
 
     return { data };
   } catch (error) {
-    throw new Error(
-      `Failed to fetch best games for ${requestedPlayerCount} players: ${error}`,
-    );
+    console.log(
+      `Error fetching best games for ${requestedPlayerCount} players: ${error}`,
+    )
+    throw new AppError(`Failed to fetch best games for ${requestedPlayerCount} players`, 500);
   }
 };

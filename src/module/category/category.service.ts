@@ -1,5 +1,6 @@
 import Category from "./category.model";
 import { CategoryResult, PopularCategoryResult } from "./category.type";
+import { AppError } from "../../utils/appError.util";
 
 export const list = async (
   limit: number = 10,
@@ -14,7 +15,8 @@ export const list = async (
       .lean();
     return { data };
   } catch (error) {
-    throw new Error(`Error fetching categories: ${error}`);
+    console.log("Error fetching categories: ", error);
+    throw new AppError("Failed to fetch categories", 500);
   }
 };
 
@@ -23,7 +25,8 @@ export const get = async (bgg_ids: number[]): Promise<CategoryResult> => {
     const data = await Category.find({ bgg_id: { $in: bgg_ids } }).lean();
     return { data };
   } catch (error) {
-    throw new Error(`Error fetching categories: ${error}`);
+    console.log("Error fetching categories: ", error);
+    throw new AppError("Failed to fetch categories", 500);
   }
 };
 
@@ -81,6 +84,7 @@ export const getPopular = async (
       totalCategory: result[0]?.total || 0,
     };
   } catch (error) {
-    throw new Error(`Error fetching popular categories: ${error}`);
+    console.log("Error fetching popular categories: ", error);
+    throw new AppError("Error fetching popular categories");
   }
 };

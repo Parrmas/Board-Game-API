@@ -6,8 +6,7 @@ import Game, { IGame } from "../game/game.model";
 import { populateRelatedData } from "../../utils/populate.util";
 import { POPULATE_CONFIG } from "../game/game.type";
 import crypto from "crypto";
-
-// Hardcoded user data
+import { AppError } from "../../utils/appError.util";
 
 // Maps to store Tokens
 // Token blacklist to store invalidated tokens (on logout)
@@ -21,7 +20,7 @@ export const generateToken = async (payload: JwtPayload): Promise<string> => {
   const key = process.env.JWT_SECRET;
   const expire = process.env.JWT_EXPIRE_IN;
   if (!key) {
-    throw new Error("JWT_SECRET is not defined");
+    throw new AppError("JWT_SECRET is not defined");
   }
 
   return jwt.sign(payload, key, {
@@ -35,11 +34,11 @@ export const login = async (
   const user = await User.findOne({ email: loginData.email }).select("+password");
   // Check if user exists
   if (!user) {
-    throw new Error("Invalid email or password");
+    throw new AppError("Invalid email or password");
   }
   // Check if user is already logged in
   if (user.isLoggedIn) {
-    throw new Error("User is already logged in");
+    throw new AppError("User is already logged in");
   }
   // Check password (using bcrypt compare for the hashed password)
   const isPasswordValid = await bcrypt.compare(
@@ -47,7 +46,7 @@ export const login = async (
     user.password,
   );
   if (!isPasswordValid) {
-    throw new Error("Invalid email or password");
+    throw new AppError("Invalid email or password");
   }
 
   // Update login status
@@ -83,7 +82,7 @@ export const logout = async (token: string) => {
 export const verifyToken = async (token: string): Promise<JwtPayload> => {
   try {
     if (tokenBlacklist.has(token)) {
-      throw new Error("Token has been invalidated (user logged out)");
+      throw new AppError("Token has been invalidated (user logged out)");
     }
 
     const decoded = jwt.verify(
@@ -93,14 +92,14 @@ export const verifyToken = async (token: string): Promise<JwtPayload> => {
 
     return decoded;
   } catch (error) {
-    throw new Error("Invalid or expired token");
+    throw new AppError("Invalid or expired token");
   }
 };
 
 export const getUserById = async (userId: string) => {
   const user = await User.findById(userId).lean();
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
   return user;
 };
@@ -108,7 +107,7 @@ export const getUserById = async (userId: string) => {
 export const getSavedGame = async (userId: string): Promise<IGame[]> => {
   const user = await User.findById(userId).lean();
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
   const data = await Game.find({
     bgg_id: { $in: user?.fav_games_ids  || [] },
@@ -131,9 +130,9 @@ export const register = async (
 
   if (existingUser) {
     if (existingUser.email === registerData.email) {
-      throw new Error("Email is already registered");
+      throw new AppError("Email is already registered", 400);
     }
-    throw new Error("Username is already taken");
+    throw new AppError("Username is already taken", 400);
   }
 
   const hashedPassword = await bcrypt.hash(registerData.password, 10);
@@ -165,7 +164,7 @@ export const addSavedGame = async (
   ).lean();
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
   const data = await Game.find({
     bgg_id: { $in: user?.fav_games_ids  || [] },
@@ -185,7 +184,7 @@ export const removeSavedGame = async (
   ).lean();
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
   const data = await Game.find({
     bgg_id: { $in: user?.fav_games_ids  || [] },

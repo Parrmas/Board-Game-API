@@ -3,6 +3,7 @@ import * as AuthService from "./auth.service";
 import { ILoginRequest, IRegisterRequest } from "./auth.type";
 import { AuthenticatedRequest } from "../../middleware/auth.middleware";
 import { sendError, sendSuccess } from "../../utils/response.util";
+import { AppError } from "../../utils/appError.util";
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -11,7 +12,11 @@ export const login = async (req: Request, res: Response) => {
 
     sendSuccess(res, result);
   } catch (error: any) {
-    sendError(res, 401, error.message);
+    if (error instanceof AppError) {
+      return sendError(res, error.statusCode, error.message);
+    }
+    console.error("Error during login: ", error);
+    sendError(res, 500, "Internal server error");
   }
 };
 
@@ -29,7 +34,11 @@ export const logout = async (req: AuthenticatedRequest, res: Response) => {
 
     sendSuccess(res, { message: "User logged out successfully" });
   } catch (error: any) {
-    sendError(res, 400, error.message);
+    if (error instanceof AppError) {
+      return sendError(res, error.statusCode, error.message);
+    }
+    console.error("Error during logout: ", error);
+    sendError(res, 500, "Internal server error");
   }
 };
 
@@ -57,10 +66,11 @@ export const getProfileGames = async (req: AuthenticatedRequest, res: Response) 
     const savedGames = await AuthService.getSavedGame(userId);
     sendSuccess(res, savedGames);
   } catch (error: any) {
-    if (error.message === "User not found") {
-      return sendError(res, 404, error.message);
+    if (error instanceof AppError) {
+      return sendError(res, error.statusCode, error.message);
     }
-    sendError(res, 500, error.message);
+    console.error("Error fetching profile games: ", error);
+    sendError(res, 500, "Internal server error");
   }
 };
 
@@ -71,7 +81,11 @@ export const register = async (req: Request, res: Response) => {
 
     sendSuccess(res, result);
   } catch (error: any) {
-    sendError(res, 400, error.message);
+    if (error instanceof AppError) {
+      return sendError(res, error.statusCode, error.message);
+    }
+    console.error("Error during registration: ", error);
+    sendError(res, 500, "Internal server error");
   }
 };
 
@@ -90,10 +104,11 @@ export const addProfileGame = async (req: AuthenticatedRequest, res: Response) =
     const data = await AuthService.addSavedGame(userId, bggId);
     sendSuccess(res, data);
   } catch (error: any) {
-    if (error.message === "User not found") {
-      return sendError(res, 404, error.message);
+    if (error instanceof AppError) {
+      return sendError(res, error.statusCode, error.message);
     }
-    sendError(res, 500, error.message);
+    console.error("Error adding profile game: ", error);
+    sendError(res, 500, "Internal server error");
   }
 };
 
@@ -112,9 +127,10 @@ export const removeProfileGame = async (req: AuthenticatedRequest, res: Response
     const data = await AuthService.removeSavedGame(userId, bggId);
     sendSuccess(res, data);
   } catch (error: any) {
-    if (error.message === "User not found") {
-      return sendError(res, 404, error.message);
+    if (error instanceof AppError) {
+      return sendError(res, error.statusCode, error.message);
     }
-    return sendError(res, 500, error.message);
+    console.error("Error removing profile game: ", error);
+    sendError(res, 500, "Internal server error");
   }
 };

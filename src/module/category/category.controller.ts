@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as CategoryService from "./category.service";
 import { sendError, sendSuccess } from "../../utils/response.util";
+import { AppError } from "../../utils/appError.util";
 
 export const list = async (req: Request, res: Response) => {
   try {
@@ -17,7 +18,11 @@ export const list = async (req: Request, res: Response) => {
     const result = await CategoryService.list(limit, page);
     sendSuccess(res, result);
   } catch (error: any) {
-    sendError(res, 500, error.message);
+    if (error instanceof AppError) {
+      return sendError(res, error.statusCode, error.message);
+    }
+    console.error(error);
+    sendError(res, 500, "Internal server error");
   }
 };
 
@@ -39,7 +44,11 @@ export const get = async (req: Request, res: Response) => {
     const result = await CategoryService.get(ids);
     sendSuccess(res, result);
   } catch (error: any) {
-    sendError(res, 500, error.message);
+    if (error instanceof AppError) {
+      return sendError(res, error.statusCode, error.message);
+    }
+    console.error(error);
+    sendError(res, 500, "Internal server error");
   }
 };
 
@@ -59,6 +68,10 @@ export const getPopular = async (req: Request, res: Response) => {
     const result = await CategoryService.getPopular(limit, page);
     sendSuccess(res, result);
   } catch (error: any) {
-    sendError(res, 500, error.message);
+    if (error instanceof AppError) {
+      return sendError(res, error.statusCode, error.message);
+    }
+    console.error(error);
+    sendError(res, 500, "Internal server error");
   }
 };

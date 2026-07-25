@@ -1,3 +1,4 @@
+import { AppError } from "../../utils/appError.util";
 import Publisher from "./publisher.model";
 import { PublisherResult } from "./publisher.type";
 
@@ -15,7 +16,8 @@ export const list = async (
 
     return { data };
   } catch (error) {
-    throw new Error(`Error fetching publishers: ${error}`);
+    console.log("Error fetching publishers: ", error);
+    throw new AppError("Failed to fetch publishers", 500);
   }
 };
 
@@ -24,6 +26,7 @@ export const get = async (bgg_ids: number[]): Promise<PublisherResult> => {
     const data = await Publisher.find({ bgg_id: { $in: bgg_ids } }).lean();
     return { data };
   } catch (error) {
-    throw new Error(`Error fetching publishers: ${error}`);
+    console.log("Error fetching publishers: ", error);
+    throw new AppError("Failed to fetch publishers", 500);
   }
 };

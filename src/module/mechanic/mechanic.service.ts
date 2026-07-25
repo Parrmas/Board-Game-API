@@ -1,3 +1,4 @@
+import { AppError } from "../../utils/appError.util";
 import Mechanic, { IMechanic } from "./mechanic.model";
 import { MechanicResult } from "./mechanic.type";
 
@@ -15,7 +16,8 @@ export const list = async (
 
     return { data };
   } catch (error) {
-    throw new Error(`Error fetching mechanics: ${error}`);
+    console.log("Error fetching mechanics: ", error);
+    throw new AppError("Failed to fetch mechanics", 500 );
   }
 };
 
@@ -24,6 +26,7 @@ export const get = async (bgg_ids: number[]): Promise<MechanicResult> => {
     const data = await Mechanic.find({ bgg_id: { $in: bgg_ids } }).lean();
     return { data };
   } catch (error) {
-    throw new Error(`Error fetching mechanics: ${error}`);
+    console.log("Error fetching mechanics: ", error);
+    throw new AppError("Failed to fetch mechanics", 500 );
   }
 };

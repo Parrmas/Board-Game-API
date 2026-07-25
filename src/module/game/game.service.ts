@@ -5,6 +5,7 @@ import {
   buildFilterForOverall,
   getFilterOptions,
 } from "../../utils/filter.util";
+import { AppError } from "../../utils/appError.util";
 
 export const list = async (
   limit: number = 10,
@@ -26,7 +27,8 @@ export const list = async (
       data,
     };
   } catch (error) {
-    throw new Error(`Error fetching games: ${error}`);
+    console.log("Error fetching games: ", error);
+    throw new AppError("Failed to fetch games", 500);
   }
 };
 
@@ -36,6 +38,7 @@ export const get = async (bgg_ids: number[]): Promise<GamesResult> => {
     const data = await populateRelatedData(games, POPULATE_CONFIG);
     return { data };
   } catch (error) {
-    throw new Error(`Error fetching games: ${error}`);
+    console.log("Error fetching games: ", error);
+    throw new AppError("Failed to fetch games", 500);
   }
 };

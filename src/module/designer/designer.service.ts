@@ -1,5 +1,6 @@
 import Designer from "./designer.model";
 import { DesignerResult } from "./designer.type";
+import { AppError } from "../../utils/appError.util";
 
 export const list = async (
   limit: number = 10,
@@ -15,7 +16,8 @@ export const list = async (
 
     return { data };
   } catch (error) {
-    throw new Error(`Error fetching Designers: ${error}`);
+    console.log("Error fetching Designers: ", error);
+    throw new AppError("Failed to fetch designers", 500);
   }
 };
 
@@ -24,6 +26,7 @@ export const get = async (bgg_ids: number[]): Promise<DesignerResult> => {
     const data = await Designer.find({ bgg_id: { $in: bgg_ids } }).lean();
     return { data };
   } catch (error) {
-    throw new Error(`Error fetching Designers: ${error}`);
+    console.log("Error fetching Designers: ", error);
+    throw new AppError("Failed to fetch designers", 500);
   }
 };
