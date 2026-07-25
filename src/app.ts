@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { validateEnv } from "./config/validateEnv";
 import fs from "fs";
 import { Request, Response, NextFunction } from "express";
 import helmet from "helmet";
@@ -8,6 +9,9 @@ dotenv.config({ path: ".env" });
 if (fs.existsSync(".local.env")) {
   dotenv.config({ path: ".local.env", override: true });
 }
+
+// Validate required environment variables
+validateEnv();
 
 import express, { Application } from "express";
 import cors from "cors";
