@@ -6,7 +6,7 @@ export const list = async (
   page: number = 1,
 ): Promise<CategoryResult> => {
   try {
-    const skip = limit * page;
+    const skip = limit * (page - 1);
     const data = await Category.find()
       .limit(limit)
       .skip(skip)

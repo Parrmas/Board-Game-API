@@ -1,12 +1,16 @@
 import { GameFilters } from "../module/game/game.type";
 import Game from "../module/game/game.model";
 
+const escapeRegex = (str: string): string => {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+
 export const buildFilterForOverall = (filters: GameFilters) => {
   const query: any = {};
 
   // Name filter (case-insensitive partial match)
   if (filters.name) {
-    query.name = { $regex: filters.name, $options: "i" };
+    query.name = { $regex: escapeRegex(filters.name), $options: "i" };
   }
 
   // Player count filter - USE THE CORRECT FIELD NAMES FROM YOUR SCHEMA

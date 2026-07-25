@@ -6,7 +6,7 @@ export const list = async (
   page: number = 1,
 ): Promise<PublisherResult> => {
   try {
-    const skip = limit * page;
+    const skip = limit * (page - 1);
     const data = await Publisher.find()
       .limit(limit)
       .skip(skip)

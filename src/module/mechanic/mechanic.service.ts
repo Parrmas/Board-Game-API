@@ -6,7 +6,7 @@ export const list = async (
   page: number = 1,
 ): Promise<MechanicResult> => {
   try {
-    const skip = limit * page;
+    const skip = limit * (page - 1);
     const data = await Mechanic.find()
       .limit(limit)
       .skip(skip)

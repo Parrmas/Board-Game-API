@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as AuthController from "./auth.controller";
 import { authenticateToken } from "../../middleware/auth.middleware";
 import { validateRegisterBody } from "../../middleware/validate.middleware";
+import { authLimiter } from "../../middleware/rateLimit.middleware";
 
 const router = Router();
 
@@ -37,7 +38,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/register", validateRegisterBody, AuthController.register);
+router.post("/register", authLimiter, validateRegisterBody, AuthController.register);
 
 /**
  * @swagger
@@ -71,7 +72,7 @@ router.post("/register", validateRegisterBody, AuthController.register);
  *             schema:
  *               $ref: '#/components/responses/AlreadyLoggedInError'
  */
-router.post("/get-token", AuthController.login);
+router.post("/get-token", authLimiter, AuthController.login);
 
 /**
  * @swagger

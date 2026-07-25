@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import fs from "fs";
 import { Request, Response, NextFunction } from "express";
+import helmet from "helmet";
 // Load env file depending on environment
 dotenv.config({ path: ".env" });
 
@@ -16,10 +17,12 @@ import connectDB from "./config/db";
 import swaggerSpec from "./config/swagger";
 
 const app: Application = express();
+const CORS_WHITELIST = process.env.CORS_WHITELIST?.split(",") || [];
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: process.env.NODE_ENV === "production" ? CORS_WHITELIST : "*" }));
 app.use(express.json());
+app.use(helmet());
 
 // Swagger
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

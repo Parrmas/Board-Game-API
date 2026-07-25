@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import { IGame } from "../game/game.model";
 
 export interface IUser extends Document {

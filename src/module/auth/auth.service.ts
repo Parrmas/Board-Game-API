@@ -10,6 +10,10 @@ import crypto from "crypto";
 // Hardcoded user data
 
 // Maps to store Tokens
+// Token blacklist to store invalidated tokens (on logout)
+// Accepted limits for blacklist to be wiped out as single instance deployment. Hence
+// logout will still be functional even if the server restarts.
+// In a multi instance deployment, consider using a shared cache or database for token management.
 const activeTokens = new Set<string>();
 const tokenBlacklist = new Map<string, number>();
 
