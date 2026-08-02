@@ -149,6 +149,9 @@ export const getFilterOptions = async () => {
       },
     };
   } catch (error) {
-    throw new Error(`Error fetching filter options: ${error}`);
-  }
+  throw new Error(
+      `Error fetching filter options: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error },
+    );  
+}
 };

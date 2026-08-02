@@ -52,7 +52,11 @@ export const getUser = async (req: AuthenticatedRequest, res: Response) => {
 
     sendSuccess(res, user);
   } catch (error: any) {
-    sendError(res, 500, error.message);
+    if (error instanceof AppError) {
+      return sendError(res, error.statusCode, error.message);
+    }
+    console.error(error);
+    sendError(res, 500, "Internal server error");
   }
 };
 
@@ -79,7 +83,7 @@ export const register = async (req: Request, res: Response) => {
     const registerData: IRegisterRequest = req.body;
     const result = await AuthService.register(registerData);
 
-    sendSuccess(res, result);
+    sendSuccess(res, result, 201);
   } catch (error: any) {
     if (error instanceof AppError) {
       return sendError(res, error.statusCode, error.message);

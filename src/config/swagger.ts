@@ -133,18 +133,7 @@ const options: swaggerJsdoc.Options = {
               type: "object",
               properties: {
                 token: { type: "string" },
-                user: {
-                  type: "object",
-                  properties: {
-                    id: { type: "string" },
-                    username: { type: "string" },
-                    email: { type: "string" },
-                    savedGameIds: {
-                      type: "array",
-                      items: { type: "number" },
-                    },
-                  },
-                },
+                message: { type: "string" },
               },
             },
           },

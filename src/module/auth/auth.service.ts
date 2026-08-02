@@ -13,7 +13,6 @@ import { AppError } from "../../utils/appError.util";
 // Accepted limits for blacklist to be wiped out as single instance deployment. Hence
 // logout will still be functional even if the server restarts.
 // In a multi instance deployment, consider using a shared cache or database for token management.
-const activeTokens = new Set<string>();
 const tokenBlacklist = new Map<string, number>();
 
 export const generateToken = async (payload: JwtPayload): Promise<string> => {
@@ -59,9 +58,6 @@ export const login = async (
     email: user.email,
   });
 
-  // Store Active Tokens
-  activeTokens.add(token);
-
   return {
     token,
   };
@@ -74,7 +70,6 @@ export const logout = async (token: string) => {
   }
 
   if (decoded?.userId) {
-    activeTokens.delete(token);
     await User.findByIdAndUpdate(decoded.userId, { isLoggedIn: false });
   }
 };
@@ -92,7 +87,8 @@ export const verifyToken = async (token: string): Promise<JwtPayload> => {
 
     return decoded;
   } catch (error) {
-    throw new AppError("Invalid or expired token");
+    if (error instanceof AppError) { throw error; };
+    throw new AppError("Invalid or expired token", 401, { cause: error });
   }
 };
 
