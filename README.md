@@ -1,6 +1,6 @@
 # Board Game API
 
-![CI](https://github.com/<your-username>/Board-Game-API/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Parrmas/Board-Game-API/actions/workflows/ci.yml/badge.svg)
 
 A RESTful API for managing and exploring a board game collection — games, categories, mechanics, designers, publishers, and user accounts with saved-game lists. Built as a portfolio project to demonstrate a clean, modular Express + TypeScript + MongoDB architecture.
 
