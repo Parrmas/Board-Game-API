@@ -1,32 +1,8 @@
-import { AppError } from "../../utils/appError.util";
-import Publisher from "./publisher.model";
-import { PublisherResult } from "./publisher.type";
+import Publisher, { IPublisher } from "./publisher.model";
+import {
+  createListService,
+  createGetByBggIdService,
+} from "../../utils/crudService.factory";
 
-export const list = async (
-  limit: number = 10,
-  page: number = 1,
-): Promise<PublisherResult> => {
-  try {
-    const skip = limit * (page - 1);
-    const data = await Publisher.find()
-      .limit(limit)
-      .skip(skip)
-      .sort({ name: 1 })
-      .lean();
-
-    return { data };
-  } catch (error) {
-    console.log("Error fetching publishers: ", error);
-    throw new AppError("Failed to fetch publishers", 500);
-  }
-};
-
-export const get = async (bgg_ids: number[]): Promise<PublisherResult> => {
-  try {
-    const data = await Publisher.find({ bgg_id: { $in: bgg_ids } }).lean();
-    return { data };
-  } catch (error) {
-    console.log("Error fetching publishers: ", error);
-    throw new AppError("Failed to fetch publishers", 500);
-  }
-};
+export const list = createListService<IPublisher>(Publisher, "publishers");
+export const get = createGetByBggIdService<IPublisher>(Publisher, "publishers");

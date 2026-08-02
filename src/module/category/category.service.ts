@@ -1,34 +1,13 @@
 import Category from "./category.model";
-import { CategoryResult, PopularCategoryResult } from "./category.type";
+import { PopularCategoryResult } from "./category.type";
 import { AppError } from "../../utils/appError.util";
+import {
+  createListService,
+  createGetByBggIdService,
+} from "../../utils/crudService.factory";
 
-export const list = async (
-  limit: number = 10,
-  page: number = 1,
-): Promise<CategoryResult> => {
-  try {
-    const skip = limit * (page - 1);
-    const data = await Category.find()
-      .limit(limit)
-      .skip(skip)
-      .sort({ name: 1 })
-      .lean();
-    return { data };
-  } catch (error) {
-    console.log("Error fetching categories: ", error);
-    throw new AppError("Failed to fetch categories", 500);
-  }
-};
-
-export const get = async (bgg_ids: number[]): Promise<CategoryResult> => {
-  try {
-    const data = await Category.find({ bgg_id: { $in: bgg_ids } }).lean();
-    return { data };
-  } catch (error) {
-    console.log("Error fetching categories: ", error);
-    throw new AppError("Failed to fetch categories", 500);
-  }
-};
+export const list = createListService(Category, "categories");
+export const get = createGetByBggIdService(Category, "categories");
 
 export const getPopular = async (
   limit: number = 10,

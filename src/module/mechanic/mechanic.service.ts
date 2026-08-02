@@ -1,32 +1,8 @@
-import { AppError } from "../../utils/appError.util";
 import Mechanic, { IMechanic } from "./mechanic.model";
-import { MechanicResult } from "./mechanic.type";
+import {
+  createListService,
+  createGetByBggIdService,
+} from "../../utils/crudService.factory";
 
-export const list = async (
-  limit: number = 10,
-  page: number = 1,
-): Promise<MechanicResult> => {
-  try {
-    const skip = limit * (page - 1);
-    const data = await Mechanic.find()
-      .limit(limit)
-      .skip(skip)
-      .sort({ name: 1 })
-      .lean();
-
-    return { data };
-  } catch (error) {
-    console.log("Error fetching mechanics: ", error);
-    throw new AppError("Failed to fetch mechanics", 500 );
-  }
-};
-
-export const get = async (bgg_ids: number[]): Promise<MechanicResult> => {
-  try {
-    const data = await Mechanic.find({ bgg_id: { $in: bgg_ids } }).lean();
-    return { data };
-  } catch (error) {
-    console.log("Error fetching mechanics: ", error);
-    throw new AppError("Failed to fetch mechanics", 500 );
-  }
-};
+export const list = createListService<IMechanic>(Mechanic, "mechanics");
+export const get = createGetByBggIdService<IMechanic>(Mechanic, "mechanics");
