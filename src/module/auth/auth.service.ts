@@ -76,8 +76,13 @@ export const logout = async (token: string) => {
 
 export const verifyToken = async (token: string): Promise<JwtPayload> => {
   try {
-    if (tokenBlacklist.has(token)) {
-      throw new AppError("Token has been invalidated (user logged out)");
+    const blacklistedExp = tokenBlacklist.get(token);
+    if (blacklistedExp !== undefined ) {
+      const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+      if (currentTimeInSeconds < blacklistedExp) { 
+        throw new AppError("Token has been invalidated (user logged out)");
+      }
+      tokenBlacklist.delete(token);
     }
 
     const decoded = jwt.verify(
