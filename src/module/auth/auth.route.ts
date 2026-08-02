@@ -38,7 +38,12 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/register", authLimiter, validateRegisterBody, AuthController.register);
+router.post(
+  "/register",
+  authLimiter,
+  validateRegisterBody,
+  AuthController.register,
+);
 
 /**
  * @swagger
@@ -169,7 +174,11 @@ router.get("/profile-games", authenticateToken, AuthController.getProfileGames);
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.post("/profile-games/:bgg_id", authenticateToken, AuthController.addProfileGame);
+router.post(
+  "/profile-games/:bgg_id",
+  authenticateToken,
+  AuthController.addProfileGame,
+);
 
 /**
  * @swagger
@@ -195,6 +204,10 @@ router.post("/profile-games/:bgg_id", authenticateToken, AuthController.addProfi
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.delete("/profile-games/:bgg_id", authenticateToken, AuthController.removeProfileGame);
+router.delete(
+  "/profile-games/:bgg_id",
+  authenticateToken,
+  AuthController.removeProfileGame,
+);
 
 export default router;

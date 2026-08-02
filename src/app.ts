@@ -24,7 +24,11 @@ const app: Application = express();
 const CORS_WHITELIST = process.env.CORS_WHITELIST?.split(",") || [];
 
 // Middleware
-app.use(cors({ origin: process.env.NODE_ENV === "production" ? CORS_WHITELIST : "*" }));
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === "production" ? CORS_WHITELIST : "*",
+  }),
+);
 app.use(express.json());
 app.use(helmet());
 

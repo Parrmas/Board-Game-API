@@ -1,6 +1,11 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { ILoginRequest, IAuthResponse, JwtPayload, IRegisterRequest } from "./auth.type";
+import {
+  ILoginRequest,
+  IAuthResponse,
+  JwtPayload,
+  IRegisterRequest,
+} from "./auth.type";
 import User, { IUser } from "./auth.model";
 import Game, { IGame } from "../game/game.model";
 import { populateRelatedData } from "../../utils/populate.util";
@@ -30,7 +35,9 @@ export const generateToken = async (payload: JwtPayload): Promise<string> => {
 export const login = async (
   loginData: ILoginRequest,
 ): Promise<IAuthResponse> => {
-  const user = await User.findOne({ email: loginData.email }).select("+password");
+  const user = await User.findOne({ email: loginData.email }).select(
+    "+password",
+  );
   // Check if user exists
   if (!user) {
     throw new AppError("Invalid email or password");
@@ -77,9 +84,9 @@ export const logout = async (token: string) => {
 export const verifyToken = async (token: string): Promise<JwtPayload> => {
   try {
     const blacklistedExp = tokenBlacklist.get(token);
-    if (blacklistedExp !== undefined ) {
+    if (blacklistedExp !== undefined) {
       const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-      if (currentTimeInSeconds < blacklistedExp) { 
+      if (currentTimeInSeconds < blacklistedExp) {
         throw new AppError("Token has been invalidated (user logged out)");
       }
       tokenBlacklist.delete(token);
@@ -92,7 +99,9 @@ export const verifyToken = async (token: string): Promise<JwtPayload> => {
 
     return decoded;
   } catch (error) {
-    if (error instanceof AppError) { throw error; };
+    if (error instanceof AppError) {
+      throw error;
+    }
     throw new AppError("Invalid or expired token", 401, { cause: error });
   }
 };
@@ -111,7 +120,7 @@ export const getSavedGame = async (userId: string): Promise<IGame[]> => {
     throw new AppError("User not found", 404);
   }
   const data = await Game.find({
-    bgg_id: { $in: user?.fav_games_ids  || [] },
+    bgg_id: { $in: user?.fav_games_ids || [] },
   }).lean();
   const games = await populateRelatedData(data, POPULATE_CONFIG);
   return [...games];
@@ -151,7 +160,9 @@ export const register = async (
 
   await newUser.save();
 
-  return { message: "User registered successfully" } as unknown as IAuthResponse;
+  return {
+    message: "User registered successfully",
+  } as unknown as IAuthResponse;
 };
 
 export const addSavedGame = async (
@@ -168,7 +179,7 @@ export const addSavedGame = async (
     throw new AppError("User not found", 404);
   }
   const data = await Game.find({
-    bgg_id: { $in: user?.fav_games_ids  || [] },
+    bgg_id: { $in: user?.fav_games_ids || [] },
   }).lean();
   const games = await populateRelatedData(data, POPULATE_CONFIG);
   return [...games];
@@ -188,7 +199,7 @@ export const removeSavedGame = async (
     throw new AppError("User not found", 404);
   }
   const data = await Game.find({
-    bgg_id: { $in: user?.fav_games_ids  || [] },
+    bgg_id: { $in: user?.fav_games_ids || [] },
   }).lean();
   const games = await populateRelatedData(data, POPULATE_CONFIG);
   return [...games];

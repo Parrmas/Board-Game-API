@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { sendError, sendSuccess } from "./response.util";
 import { AppError } from "./appError.util";
 
-export const createListController = <T,>(
+export const createListController = <T = unknown>(
   listService: (limit: number, page: number) => Promise<{ data: T[] }>,
 ) => {
   return async (req: Request, res: Response) => {
@@ -29,7 +29,7 @@ export const createListController = <T,>(
   };
 };
 
-export const createGetController = <T,>(
+export const createGetController = <T = unknown>(
   getService: (ids: number[]) => Promise<{ data: T[] }>,
 ) => {
   return async (req: Request, res: Response) => {

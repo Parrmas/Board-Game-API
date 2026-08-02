@@ -8,7 +8,7 @@ export interface IUser extends Document {
   username: string;
   firstName: string;
   lastName: string;
-  role: 'user' | 'admin';
+  role: "user" | "admin";
   fav_games_ids?: number[];
   fav_games?: IGame[];
   isLoggedIn: boolean;
@@ -18,12 +18,12 @@ export interface IUser extends Document {
 
 const UserSchema: Schema = new Schema({
   _id: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true }, 
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
   username: { type: String, required: true, unique: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  role: { type: String, enum: ['user', 'admin'], default: 'user' },
+  role: { type: String, enum: ["user", "admin"], default: "user" },
   fav_games_ids: { type: [Number], default: [] },
   isLoggedIn: { type: Boolean, default: false },
   created_at: { type: Date, default: Date.now, select: false },

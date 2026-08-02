@@ -43,7 +43,8 @@ export const validateRegisterBody = (
   if (!email || !password || !username || !firstName || !lastName) {
     return res.status(400).json({
       success: false,
-      message: "email, password, username, firstName, and lastName are all required",
+      message:
+        "email, password, username, firstName, and lastName are all required",
     });
   }
 

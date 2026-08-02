@@ -224,7 +224,10 @@ export const getBestGamesForPlayers = async (
   } catch (error) {
     console.log(
       `Error fetching best games for ${requestedPlayerCount} players: ${error}`,
-    )
-    throw new AppError(`Failed to fetch best games for ${requestedPlayerCount} players`, 500);
+    );
+    throw new AppError(
+      `Failed to fetch best games for ${requestedPlayerCount} players`,
+      500,
+    );
   }
 };

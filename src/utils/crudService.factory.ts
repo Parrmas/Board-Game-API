@@ -5,8 +5,14 @@ export interface ListResult<T> {
   data: T[];
 }
 
-export const createListService = <T,>(model: Model<T>, entityName: string) => {
-  return async (limit: number = 10, page: number = 1): Promise<ListResult<T>> => {
+export const createListService = <T = unknown>(
+  model: Model<T>,
+  entityName: string,
+) => {
+  return async (
+    limit: number = 10,
+    page: number = 1,
+  ): Promise<ListResult<T>> => {
     try {
       const skip = limit * (page - 1);
       const data = await model
@@ -23,7 +29,10 @@ export const createListService = <T,>(model: Model<T>, entityName: string) => {
   };
 };
 
-export const createGetByBggIdService = <T,>(model: Model<T>, entityName: string) => {
+export const createGetByBggIdService = <T = unknown>(
+  model: Model<T>,
+  entityName: string,
+) => {
   return async (bgg_ids: number[]): Promise<ListResult<T>> => {
     try {
       const data = await model.find({ bgg_id: { $in: bgg_ids } }).lean();

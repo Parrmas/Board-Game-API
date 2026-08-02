@@ -60,7 +60,10 @@ export const getUser = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-export const getProfileGames = async (req: AuthenticatedRequest, res: Response) => {
+export const getProfileGames = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
@@ -93,7 +96,10 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const addProfileGame = async (req: AuthenticatedRequest, res: Response) => {
+export const addProfileGame = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
@@ -116,7 +122,10 @@ export const addProfileGame = async (req: AuthenticatedRequest, res: Response) =
   }
 };
 
-export const removeProfileGame = async (req: AuthenticatedRequest, res: Response) => {
+export const removeProfileGame = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
   try {
     const userId = req.user?.userId;
     if (!userId) {
