@@ -1,10 +1,10 @@
 import Router from "express";
 import * as CategoryController from "./category.controller";
-import { FETCH_MAX_LIMIT, FETCH_MIN_LIMIT } from "./category.type";
-import { validateLimit } from "../../middleware/validate.middleware";
+import { validateSchema } from "../../middleware/validateSchema.middleware";
+import { bggIdParamSchema } from "../../utils/crudSchema.factory";
+import { categoryListQuerySchema, categoryPopularQuerySchema } from "./category.schema";
 
 const router = Router();
-const limitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
 
 /**
  * @swagger
@@ -45,7 +45,7 @@ const limitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
  *       500:
  *         description: Internal server error
  */
-router.get("/list", limitValidation, CategoryController.list);
+router.get("/list", validateSchema(categoryListQuerySchema, "query"), CategoryController.list);
 
 /**
  * @swagger
@@ -78,7 +78,7 @@ router.get("/list", limitValidation, CategoryController.list);
  *       500:
  *         description: Internal server error
  */
-router.get("/get/:bgg_id", CategoryController.get);
+router.get("/get/:bgg_id", validateSchema(bggIdParamSchema, "params"), CategoryController.get);
 
 /**
  * @swagger
@@ -132,6 +132,6 @@ router.get("/get/:bgg_id", CategoryController.get);
  *       500:
  *         description: Internal server error
  */
-router.get("/popular", limitValidation, CategoryController.getPopular);
+router.get("/popular", validateSchema(categoryPopularQuerySchema, "query"), CategoryController.getPopular);
 
 export default router;

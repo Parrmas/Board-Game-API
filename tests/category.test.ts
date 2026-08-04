@@ -1,4 +1,3 @@
-// tests/category.test.ts
 import request from "supertest";
 import app from "../src/app";
 import Category from "../src/module/category/category.model";

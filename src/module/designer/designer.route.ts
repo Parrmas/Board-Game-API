@@ -1,10 +1,10 @@
 import Router from "express";
 import * as DesignerController from "./designer.controller";
-import { FETCH_MAX_LIMIT, FETCH_MIN_LIMIT } from "./designer.type";
-import { validateLimit } from "../../middleware/validate.middleware";
+import { validateSchema } from "../../middleware/validateSchema.middleware";
+import { bggIdParamSchema } from "../../utils/crudSchema.factory";
+import { designerListQuerySchema } from "./designer.schema";
 
 const router = Router();
-const limitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
 
 /**
  * @swagger
@@ -45,7 +45,7 @@ const limitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
  *       500:
  *         description: Internal server error
  */
-router.get("/list", limitValidation, DesignerController.list);
+router.get("/list", validateSchema(designerListQuerySchema, "query"), DesignerController.list);
 
 /**
  * @swagger
@@ -78,5 +78,5 @@ router.get("/list", limitValidation, DesignerController.list);
  *       500:
  *         description: Internal server error
  */
-router.get("/get/:bgg_id", DesignerController.get);
+router.get("/get/:bgg_id", validateSchema(bggIdParamSchema, "params"), DesignerController.get);
 export default router;

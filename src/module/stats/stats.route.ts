@@ -1,10 +1,10 @@
 import express from "express";
 import * as StatsController from "./stats.controller";
-import { FETCH_MAX_LIMIT, FETCH_MIN_LIMIT } from "../game/game.type";
-import { validateLimit } from "../../middleware/validate.middleware";
+import { validateSchema } from "../../middleware/validateSchema.middleware";
+import { statsLimitQuerySchema, playerCountParamSchema } from "./stats.schema";
+
 
 const router = express.Router();
-const gameLimitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
 
 /**
  * @swagger
@@ -122,7 +122,7 @@ router.get("/overall", StatsController.getOverallStats);
  *       500:
  *         description: Internal server error
  */
-router.get("/top-rated", gameLimitValidation, StatsController.getTopRatedGames);
+router.get("/top-rated", validateSchema(statsLimitQuerySchema, "query"), StatsController.getTopRatedGames);
 
 /**
  * @swagger
@@ -154,7 +154,7 @@ router.get("/top-rated", gameLimitValidation, StatsController.getTopRatedGames);
  */
 router.get(
   "/most-complex",
-  gameLimitValidation,
+  validateSchema(statsLimitQuerySchema, "query"),
   StatsController.getMostComplexGames,
 );
 
@@ -194,7 +194,8 @@ router.get(
  */
 router.get(
   "/best-for-players/:player_count",
-  gameLimitValidation,
+  validateSchema(playerCountParamSchema, "params"),
+  validateSchema(statsLimitQuerySchema, "query"),
   StatsController.getBestGamesForPlayers,
 );
 

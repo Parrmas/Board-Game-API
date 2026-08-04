@@ -1,4 +1,3 @@
-// tests/filter.util.test.ts
 import { buildFilterForOverall } from "../src/utils/filter.util";
 
 describe("buildFilterForOverall", () => {

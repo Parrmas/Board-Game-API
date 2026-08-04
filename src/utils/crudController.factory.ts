@@ -1,21 +1,20 @@
 import { Request, Response } from "express";
+import { ZodType } from "zod";
 import { sendError, sendSuccess } from "./response.util";
 import { AppError } from "./appError.util";
+
+interface ListQuery {
+  limit: number;
+  page: number;
+}
 
 export const createListController = <T = unknown>(
   listService: (limit: number, page: number) => Promise<{ data: T[] }>,
 ) => {
   return async (req: Request, res: Response) => {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
-      const page = parseInt(req.query.page as string) || 1;
-
-      if (limit < 1 || limit > 100) {
-        return sendError(res, 400, "Limit must be between 1 and 100");
-      }
-      if (page < 1) {
-        return sendError(res, 400, "Page must be at least 1");
-      }
+      // req.query has already been parsed + validated by validateSchema middleware
+      const { limit, page } = req.query as unknown as ListQuery;
 
       const result = await listService(limit, page);
       sendSuccess(res, result);
@@ -34,18 +33,8 @@ export const createGetController = <T = unknown>(
 ) => {
   return async (req: Request, res: Response) => {
     try {
-      const params = req.params.bgg_id as string;
-      if (!params) {
-        return sendError(res, 400, "bgg_id parameter is required");
-      }
-      const ids = params
-        .split(",")
-        .map((id) => parseInt(id.trim()))
-        .filter((id) => !isNaN(id));
-
-      if (ids.length === 0) {
-        return sendError(res, 400, "Invalid bgg_id format");
-      }
+      // req.params.bgg_id has already been transformed into number[] by validateSchema
+      const ids = req.params.bgg_id as unknown as number[];
 
       const result = await getService(ids);
       sendSuccess(res, result);

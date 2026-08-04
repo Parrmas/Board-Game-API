@@ -1,10 +1,10 @@
 import express from "express";
 import * as GameController from "./game.controller";
 import { FETCH_MAX_LIMIT, FETCH_MIN_LIMIT } from "./game.type";
-import { validateLimit } from "../../middleware/validate.middleware";
+import { validateSchema } from "../../middleware/validateSchema.middleware";
+import { gameListQuerySchema, bggIdParamSchema } from "./game.schema";
 
 const router = express.Router();
-const limitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
 
 /**
  * @swagger
@@ -113,7 +113,7 @@ const limitValidation = validateLimit(FETCH_MIN_LIMIT, FETCH_MAX_LIMIT);
  *       500:
  *         description: Internal server error
  */
-router.get("/list", limitValidation, GameController.list);
+router.get("/list", validateSchema(gameListQuerySchema, "query"), GameController.list);
 
 /**
  * @swagger
@@ -190,6 +190,6 @@ router.get("/filter-options", GameController.getFilterOptions);
  *       500:
  *         description: Internal server error
  */
-router.get("/get/:bgg_id", GameController.get);
+router.get("/get/:bgg_id", validateSchema(bggIdParamSchema, "params"), GameController.get);
 
 export default router;

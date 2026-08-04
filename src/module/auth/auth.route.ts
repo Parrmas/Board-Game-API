@@ -1,8 +1,9 @@
 import { Router } from "express";
 import * as AuthController from "./auth.controller";
 import { authenticateToken } from "../../middleware/auth.middleware";
-import { validateRegisterBody } from "../../middleware/validate.middleware";
 import { authLimiter } from "../../middleware/rateLimit.middleware";
+import { validateSchema } from "../../middleware/validateSchema.middleware";
+import { registerSchema } from "./auth.schema";
 
 const router = Router();
 
@@ -41,7 +42,7 @@ const router = Router();
 router.post(
   "/register",
   authLimiter,
-  validateRegisterBody,
+  validateSchema(registerSchema),
   AuthController.register,
 );
 

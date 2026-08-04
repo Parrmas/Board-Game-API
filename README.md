@@ -36,7 +36,7 @@ Shared concerns live in `src/utils/` and `src/middleware/`:
 - `crudService.factory.ts` / `crudController.factory.ts` — generic `list`/`get` factories used by the simpler lookup entities (category, mechanic, designer, publisher) to avoid duplicating identical pagination/error-handling logic
 - `populate.util.ts` — generic related-data population (e.g. attaching full category/mechanic/designer/publisher objects to a game from their id arrays)
 - `auth.middleware.ts` — JWT verification, attaches `req.user`
-- `validate.middleware.ts` — query/body validation (limit bounds, registration payload)
+- `validateSchema.middleware.ts` — query/body validation (limit bounds, registration payload)
 
 ## Getting started
 
