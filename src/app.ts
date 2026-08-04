@@ -4,10 +4,12 @@ import fs from "fs";
 import { Request, Response, NextFunction } from "express";
 import helmet from "helmet";
 // Load env file depending on environment
-dotenv.config({ path: ".env" });
+if (process.env.NODE_ENV !== "test") {
+  dotenv.config({ path: ".env" });
 
-if (fs.existsSync(".local.env")) {
-  dotenv.config({ path: ".local.env", override: true });
+  if (fs.existsSync(".local.env")) {
+    dotenv.config({ path: ".local.env", override: true });
+  }
 }
 
 // Validate required environment variables
@@ -48,9 +50,5 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err);
   res.status(500).json({ success: false, message: "Internal Server Error" });
 });
-
-// DB Connection
-const mongoUri = process.env.MONGO_URI || "";
-connectDB(mongoUri);
 
 export default app;

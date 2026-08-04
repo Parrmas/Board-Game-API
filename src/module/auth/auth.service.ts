@@ -40,11 +40,11 @@ export const login = async (
   );
   // Check if user exists
   if (!user) {
-    throw new AppError("Invalid email or password");
+    throw new AppError("Invalid email or password", 401);
   }
   // Check if user is already logged in
   if (user.isLoggedIn) {
-    throw new AppError("User is already logged in");
+    throw new AppError("User is already logged in", 400);
   }
   // Check password (using bcrypt compare for the hashed password)
   const isPasswordValid = await bcrypt.compare(
@@ -52,7 +52,7 @@ export const login = async (
     user.password,
   );
   if (!isPasswordValid) {
-    throw new AppError("Invalid email or password");
+    throw new AppError("Invalid email or password", 401);
   }
 
   // Update login status
