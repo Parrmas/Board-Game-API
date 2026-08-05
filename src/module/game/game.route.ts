@@ -113,7 +113,11 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/list", validateSchema(gameListQuerySchema, "query"), GameController.list);
+router.get(
+  "/list",
+  validateSchema(gameListQuerySchema, "query"),
+  GameController.list,
+);
 
 /**
  * @swagger
@@ -190,6 +194,10 @@ router.get("/filter-options", GameController.getFilterOptions);
  *       500:
  *         description: Internal server error
  */
-router.get("/get/:bgg_id", validateSchema(bggIdParamSchema, "params"), GameController.get);
+router.get(
+  "/get/:bgg_id",
+  validateSchema(bggIdParamSchema, "params"),
+  GameController.get,
+);
 
 export default router;

@@ -12,7 +12,8 @@ export const list = async (req: Request, res: Response) => {
     const result = await GameService.list(limit, page, filters);
     sendSuccess(res, result);
   } catch (error: any) {
-    if (error instanceof AppError) return sendError(res, error.statusCode, error.message);
+    if (error instanceof AppError)
+      return sendError(res, error.statusCode, error.message);
     console.error(error);
     sendError(res, 500, "Internal server error");
   }

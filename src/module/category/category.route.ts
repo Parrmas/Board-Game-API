@@ -2,7 +2,10 @@ import Router from "express";
 import * as CategoryController from "./category.controller";
 import { validateSchema } from "../../middleware/validateSchema.middleware";
 import { bggIdParamSchema } from "../../utils/crudSchema.factory";
-import { categoryListQuerySchema, categoryPopularQuerySchema } from "./category.schema";
+import {
+  categoryListQuerySchema,
+  categoryPopularQuerySchema,
+} from "./category.schema";
 
 const router = Router();
 
@@ -45,7 +48,11 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/list", validateSchema(categoryListQuerySchema, "query"), CategoryController.list);
+router.get(
+  "/list",
+  validateSchema(categoryListQuerySchema, "query"),
+  CategoryController.list,
+);
 
 /**
  * @swagger
@@ -78,7 +85,11 @@ router.get("/list", validateSchema(categoryListQuerySchema, "query"), CategoryCo
  *       500:
  *         description: Internal server error
  */
-router.get("/get/:bgg_id", validateSchema(bggIdParamSchema, "params"), CategoryController.get);
+router.get(
+  "/get/:bgg_id",
+  validateSchema(bggIdParamSchema, "params"),
+  CategoryController.get,
+);
 
 /**
  * @swagger
@@ -132,6 +143,10 @@ router.get("/get/:bgg_id", validateSchema(bggIdParamSchema, "params"), CategoryC
  *       500:
  *         description: Internal server error
  */
-router.get("/popular", validateSchema(categoryPopularQuerySchema, "query"), CategoryController.getPopular);
+router.get(
+  "/popular",
+  validateSchema(categoryPopularQuerySchema, "query"),
+  CategoryController.getPopular,
+);
 
 export default router;

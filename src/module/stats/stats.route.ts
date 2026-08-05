@@ -3,7 +3,6 @@ import * as StatsController from "./stats.controller";
 import { validateSchema } from "../../middleware/validateSchema.middleware";
 import { statsLimitQuerySchema, playerCountParamSchema } from "./stats.schema";
 
-
 const router = express.Router();
 
 /**
@@ -122,7 +121,11 @@ router.get("/overall", StatsController.getOverallStats);
  *       500:
  *         description: Internal server error
  */
-router.get("/top-rated", validateSchema(statsLimitQuerySchema, "query"), StatsController.getTopRatedGames);
+router.get(
+  "/top-rated",
+  validateSchema(statsLimitQuerySchema, "query"),
+  StatsController.getTopRatedGames,
+);
 
 /**
  * @swagger

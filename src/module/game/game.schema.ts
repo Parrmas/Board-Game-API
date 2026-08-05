@@ -20,7 +20,12 @@ const csvNumbers = () =>
 
 export const gameListQuerySchema = z
   .object({
-    limit: z.coerce.number().int().min(FETCH_MIN_LIMIT).max(FETCH_MAX_LIMIT).default(10),
+    limit: z.coerce
+      .number()
+      .int()
+      .min(FETCH_MIN_LIMIT)
+      .max(FETCH_MAX_LIMIT)
+      .default(10),
     page: z.coerce.number().int().min(1).default(1),
     name: z.string().trim().min(1).optional(),
     min_players: z.coerce.number().int().positive().optional(),

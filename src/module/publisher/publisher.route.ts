@@ -45,7 +45,11 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/list", validateSchema(publisherListQuerySchema, "query"), PublisherController.list);
+router.get(
+  "/list",
+  validateSchema(publisherListQuerySchema, "query"),
+  PublisherController.list,
+);
 
 /**
  * @swagger
@@ -78,5 +82,9 @@ router.get("/list", validateSchema(publisherListQuerySchema, "query"), Publisher
  *       500:
  *         description: Internal server error
  */
-router.get("/get/:bgg_id", validateSchema(bggIdParamSchema, "params"), PublisherController.get);
+router.get(
+  "/get/:bgg_id",
+  validateSchema(bggIdParamSchema, "params"),
+  PublisherController.get,
+);
 export default router;

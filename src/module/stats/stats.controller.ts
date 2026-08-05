@@ -22,7 +22,8 @@ export const getTopRatedGames = async (req: Request, res: Response) => {
     const result = await StatsService.getTopRatedGames(limit);
     sendSuccess(res, result);
   } catch (error: any) {
-    if (error instanceof AppError) return sendError(res, error.statusCode, error.message);
+    if (error instanceof AppError)
+      return sendError(res, error.statusCode, error.message);
     console.error(error);
     sendError(res, 500, "Internal server error");
   }
@@ -34,7 +35,8 @@ export const getMostComplexGames = async (req: Request, res: Response) => {
     const result = await StatsService.getMostComplexGames(limit);
     sendSuccess(res, result);
   } catch (error: any) {
-    if (error instanceof AppError) return sendError(res, error.statusCode, error.message);
+    if (error instanceof AppError)
+      return sendError(res, error.statusCode, error.message);
     console.error(error);
     sendError(res, 500, "Internal server error");
   }
@@ -44,10 +46,14 @@ export const getBestGamesForPlayers = async (req: Request, res: Response) => {
   try {
     const { limit } = req.query as unknown as { limit: number };
     const { player_count } = req.params as unknown as { player_count: number };
-    const result = await StatsService.getBestGamesForPlayers(limit, player_count);
+    const result = await StatsService.getBestGamesForPlayers(
+      limit,
+      player_count,
+    );
     sendSuccess(res, result);
   } catch (error: any) {
-    if (error instanceof AppError) return sendError(res, error.statusCode, error.message);
+    if (error instanceof AppError)
+      return sendError(res, error.statusCode, error.message);
     console.error(error);
     sendError(res, 500, "Internal server error");
   }

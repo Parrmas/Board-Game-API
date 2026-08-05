@@ -4,7 +4,7 @@ import { validateSchema } from "../../middleware/validateSchema.middleware";
 import { bggIdParamSchema } from "../../utils/crudSchema.factory";
 import { mechanicListQuerySchema } from "./mechanic.schema";
 
-const router = Router(); 
+const router = Router();
 /**
  * @swagger
  * /mechanics/list:
@@ -44,7 +44,11 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/list", validateSchema(mechanicListQuerySchema, "query"), MechanicController.list);
+router.get(
+  "/list",
+  validateSchema(mechanicListQuerySchema, "query"),
+  MechanicController.list,
+);
 
 /**
  * @swagger
@@ -77,5 +81,9 @@ router.get("/list", validateSchema(mechanicListQuerySchema, "query"), MechanicCo
  *       500:
  *         description: Internal server error
  */
-router.get("/get/:bgg_id", validateSchema(bggIdParamSchema, "params"), MechanicController.get);
+router.get(
+  "/get/:bgg_id",
+  validateSchema(bggIdParamSchema, "params"),
+  MechanicController.get,
+);
 export default router;

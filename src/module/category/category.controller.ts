@@ -12,7 +12,10 @@ export const get = createGetController(CategoryService.get);
 
 export const getPopular = async (req: Request, res: Response) => {
   try {
-    const { limit, page } = req.query as unknown as { limit: number; page: number };
+    const { limit, page } = req.query as unknown as {
+      limit: number;
+      page: number;
+    };
     const result = await CategoryService.getPopular(limit, page);
     sendSuccess(res, result);
   } catch (error: unknown) {

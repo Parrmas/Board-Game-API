@@ -45,7 +45,11 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/list", validateSchema(designerListQuerySchema, "query"), DesignerController.list);
+router.get(
+  "/list",
+  validateSchema(designerListQuerySchema, "query"),
+  DesignerController.list,
+);
 
 /**
  * @swagger
@@ -78,5 +82,9 @@ router.get("/list", validateSchema(designerListQuerySchema, "query"), DesignerCo
  *       500:
  *         description: Internal server error
  */
-router.get("/get/:bgg_id", validateSchema(bggIdParamSchema, "params"), DesignerController.get);
+router.get(
+  "/get/:bgg_id",
+  validateSchema(bggIdParamSchema, "params"),
+  DesignerController.get,
+);
 export default router;
