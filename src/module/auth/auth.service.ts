@@ -20,6 +20,17 @@ import { AppError } from "../../utils/appError.util";
 // In a multi instance deployment, consider using a shared cache or database for token management.
 const tokenBlacklist = new Map<string, number>();
 
+// Utility function to generate JWT token
+const hashRefreshToken = (token: string): string =>
+  crypto.createHash("sha256").update(token).digest("hex");
+
+const refreshTokensMatch = (candidate: string, storedHash: string): boolean => {
+  const candidateHash = Buffer.from(hashRefreshToken(candidate));
+  const stored = Buffer.from(storedHash);
+  if (candidateHash.length !== stored.length) return false;
+  return crypto.timingSafeEqual(candidateHash, stored);
+};
+
 export const generateToken = async (payload: JwtPayload): Promise<string> => {
   const key = process.env.JWT_SECRET;
   const expire = process.env.JWT_EXPIRE_IN;
@@ -32,21 +43,33 @@ export const generateToken = async (payload: JwtPayload): Promise<string> => {
   } as jwt.SignOptions);
 };
 
+export const generateRefreshToken = async (
+  payload: JwtPayload,
+): Promise<string> => {
+  const key = process.env.REFRESH_TOKEN_SECRET;
+  const expire = process.env.REFRESH_TOKEN_EXPIRE_IN;
+  if (!key) {
+    throw new AppError("REFRESH_TOKEN_SECRET is not defined");
+  }
+  return jwt.sign(
+    { ...payload, jti: crypto.randomUUID() }, // guarantees a unique token per issuance
+    key,
+    { expiresIn: expire || "7d" } as jwt.SignOptions,
+  );
+};
+
 export const login = async (
   loginData: ILoginRequest,
-): Promise<IAuthResponse> => {
+): Promise<{ token: string; refreshToken: string }> => {
   const user = await User.findOne({ email: loginData.email }).select(
     "+password",
   );
-  // Check if user exists
   if (!user) {
     throw new AppError("Invalid email or password", 401);
   }
-  // Check if user is already logged in
   if (user.isLoggedIn) {
     throw new AppError("User is already logged in", 400);
   }
-  // Check password (using bcrypt compare for the hashed password)
   const isPasswordValid = await bcrypt.compare(
     loginData.password,
     user.password,
@@ -55,19 +78,48 @@ export const login = async (
     throw new AppError("Invalid email or password", 401);
   }
 
-  // Update login status
+  const payload = { userId: user.id, email: user.email };
+  const token = await generateToken(payload);
+  const refreshToken = await generateRefreshToken(payload);
+  user.refreshTokenHash = hashRefreshToken(refreshToken);
   user.isLoggedIn = true;
   await user.save();
 
-  // Generate token
-  const token = await generateToken({
-    userId: user.id,
-    email: user.email,
-  });
+  return { token, refreshToken };
+};
 
-  return {
-    token,
-  };
+export const refreshAccessToken = async (
+  refreshToken: string,
+): Promise<{ token: string; refreshToken: string }> => {
+  let decoded: JwtPayload;
+  try {
+    decoded = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET as string,
+    ) as JwtPayload;
+  } catch {
+    throw new AppError("Invalid or expired refresh token", 401);
+  }
+
+  const user = await User.findById(decoded.userId).select("+refreshTokenHash");
+  if (!user || !user.refreshTokenHash) {
+    throw new AppError("Invalid or expired refresh token", 401);
+  }
+
+  const matches = refreshTokensMatch(refreshToken, user.refreshTokenHash);
+  if (!matches) {
+    user.refreshTokenHash = undefined;
+    await user.save();
+    throw new AppError("Invalid or expired refresh token", 401);
+  }
+
+  const payload = { userId: user.id, email: user.email };
+  const newAccessToken = await generateToken(payload);
+  const newRefreshToken = await generateRefreshToken(payload);
+  user.refreshTokenHash = await hashRefreshToken(newRefreshToken);
+  await user.save();
+
+  return { token: newAccessToken, refreshToken: newRefreshToken };
 };
 
 export const logout = async (token: string) => {
@@ -75,9 +127,11 @@ export const logout = async (token: string) => {
   if (decoded?.exp) {
     tokenBlacklist.set(token, decoded.exp);
   }
-
   if (decoded?.userId) {
-    await User.findByIdAndUpdate(decoded.userId, { isLoggedIn: false });
+    await User.findByIdAndUpdate(decoded.userId, {
+      isLoggedIn: false,
+      $unset: { refreshTokenHash: "" },
+    });
   }
 };
 

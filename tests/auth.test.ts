@@ -11,7 +11,9 @@ describe("Auth flow", () => {
   };
 
   it("registers, logs in, and fetches the current user", async () => {
-    const registerRes = await request(app).post("/api/auth/register").send(user);
+    const registerRes = await request(app)
+      .post("/api/auth/register")
+      .send(user);
     expect(registerRes.status).toBe(201);
 
     const loginRes = await request(app)
@@ -25,6 +27,33 @@ describe("Auth flow", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(meRes.status).toBe(200);
     expect(meRes.body.data.email).toBe(user.email);
+  });
+
+  it("refreshes tokens via cookie and rejects reused refresh tokens", async () => {
+    await request(app).post("/api/auth/register").send(user);
+
+    const loginRes = await request(app)
+      .post("/api/auth/get-token")
+      .send({ email: user.email, password: user.password });
+
+    const setCookieHeader = loginRes.headers["set-cookie"];
+    expect(setCookieHeader).toBeDefined();
+    const cookie = setCookieHeader[0];
+
+    const refreshRes = await request(app)
+      .post("/api/auth/refresh-token")
+      .set("Cookie", cookie);
+    expect(refreshRes.status).toBe(200);
+    expect(refreshRes.body.data.token).toBeDefined();
+
+    const newCookie = refreshRes.headers["set-cookie"][0];
+    expect(newCookie).not.toBe(cookie); // rotation happened
+
+    // Old cookie should now be rejected
+    const reuseRes = await request(app)
+      .post("/api/auth/refresh-token")
+      .set("Cookie", cookie);
+    expect(reuseRes.status).toBe(401);
   });
 
   it("rejects a second login while already logged in", async () => {

@@ -10,3 +10,7 @@ export const registerSchema = z.object({
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+export const refreshTokenSchema = z.object({
+  refreshToken: z.string().min(1),
+});

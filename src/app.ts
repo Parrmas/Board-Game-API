@@ -3,6 +3,7 @@ import { validateEnv } from "./config/validateEnv";
 import fs from "fs";
 import { Request, Response, NextFunction } from "express";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 // Load env file depending on environment
 if (process.env.NODE_ENV !== "test") {
   dotenv.config({ path: ".env" });
@@ -27,10 +28,15 @@ const CORS_WHITELIST = process.env.CORS_WHITELIST?.split(",") || [];
 // Middleware
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "production" ? CORS_WHITELIST : "*",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? CORS_WHITELIST
+        : "http://localhost:3000",
+    credentials: true,
   }),
 );
 app.use(express.json());
+app.use(cookieParser());
 app.use(helmet());
 
 // Swagger

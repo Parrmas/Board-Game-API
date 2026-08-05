@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 // reads process.env at import time.
 process.env.JWT_SECRET = "test-secret";
 process.env.JWT_EXPIRE_IN = "1h";
+process.env.REFRESH_TOKEN_SECRET = "test-refresh-secret";
+process.env.REFRESH_TOKEN_EXPIRE_IN = "7d";
 process.env.MONGO_URI = "placeholder"; // validateEnv() only checks presence, not validity
 process.env.NODE_ENV = "test";
 

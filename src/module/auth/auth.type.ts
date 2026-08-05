@@ -5,6 +5,7 @@ export interface ILoginRequest {
 
 export interface IAuthResponse {
   token: string;
+  message?: string;
 }
 
 export interface JwtPayload {
@@ -24,4 +25,8 @@ export interface IRegisterRequest {
   username: string;
   firstName: string;
   lastName: string;
+}
+
+export interface IRefreshTokenRequest {
+  refreshToken: string;
 }

@@ -14,6 +14,7 @@ export interface IUser extends Document {
   isLoggedIn: boolean;
   created_at?: Date;
   updated_at?: Date;
+  refreshTokenHash?: string;
 }
 
 const UserSchema: Schema = new Schema({
@@ -28,6 +29,7 @@ const UserSchema: Schema = new Schema({
   isLoggedIn: { type: Boolean, default: false },
   created_at: { type: Date, default: Date.now, select: false },
   updated_at: { type: Date, default: Date.now, select: false },
+  refreshTokenHash: { type: String, select: false },
 });
 
 export default mongoose.model<IUser>("User", UserSchema);

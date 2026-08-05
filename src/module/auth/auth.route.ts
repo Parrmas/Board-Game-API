@@ -3,7 +3,7 @@ import * as AuthController from "./auth.controller";
 import { authenticateToken } from "../../middleware/auth.middleware";
 import { authLimiter } from "../../middleware/rateLimit.middleware";
 import { validateSchema } from "../../middleware/validateSchema.middleware";
-import { registerSchema } from "./auth.schema";
+import { refreshTokenSchema, registerSchema } from "./auth.schema";
 
 const router = Router();
 
@@ -79,6 +79,29 @@ router.post(
  *               $ref: '#/components/responses/AlreadyLoggedInError'
  */
 router.post("/get-token", authLimiter, AuthController.login);
+
+/**
+ * @swagger
+ * /auth/refresh-token:
+ *   post:
+ *     summary: Exchange the refreshToken cookie for a new access token (rotates the refresh cookie)
+ *     tags: [Authentication]
+ *     description: Reads the httpOnly `refreshToken` cookie set at login. No request body required.
+ *     responses:
+ *       200:
+ *         description: New access token issued; refresh cookie rotated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
+ *       401:
+ *         description: Refresh cookie missing, invalid, expired, or already used
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.post("/refresh-token", authLimiter, AuthController.refreshToken);
 
 /**
  * @swagger
