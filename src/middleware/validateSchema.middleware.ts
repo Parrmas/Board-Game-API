@@ -16,8 +16,13 @@ export const validateSchema = <T = unknown>(
       return sendError(res, 400, message);
     }
 
-    // Overwrite with parsed/coerced data (e.g. numbers from query strings)
-    req[part] = result.data as any;
+    // Define the validated data on the request object to ensure type safety
+    Object.defineProperty(req, part, {
+      value: result.data,
+      writable: true,
+      enumerable: true,
+      configurable: true,
+    });
     next();
   };
 };
