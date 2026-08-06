@@ -59,6 +59,18 @@ describe("GET /api/stats/overall", () => {
   });
 });
 
+describe("GET /api/stats/overall with no games", () => {
+  it("does not crash or return NaN when the collection is empty", async () => {
+    const res = await request(app).get("/api/stats/overall");
+
+    expect(res.status).toBe(200);
+    // Document current behavior — this will likely FAIL today and expose the bug
+    expect(res.body.data.summary.totalGames).toBe(0);
+    expect(Number.isNaN(res.body.data.summary.averageRating)).toBe(false);
+    expect(Number.isNaN(res.body.data.summary.averageComplexity)).toBe(false);
+  });
+});
+
 describe("GET /api/stats/top-rated", () => {
   it("returns games sorted by rating descending", async () => {
     await Game.create([

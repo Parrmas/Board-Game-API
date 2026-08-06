@@ -44,7 +44,8 @@ export const populateRelatedData = async (
     const populatedItem = { ...item };
 
     dataMaps.forEach(({ map, field }, localIdsField) => {
-      const relatedItems = item[localIdsField || []]
+      const localIds = item[localIdsField] || [];
+      const relatedItems = localIds
         .map((id: number | string | Types.ObjectId) => map.get(id))
         .filter(Boolean);
 

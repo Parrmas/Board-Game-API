@@ -70,6 +70,14 @@ describe("GET /api/games/list", () => {
     const res = await request(app).get("/api/games/list?limit=999");
     expect(res.status).toBe(400);
   });
+
+  it("rejects when min_players is greater than max_players", async () => {
+    const res = await request(app).get(
+      "/api/games/list?min_players=6&max_players=2",
+    );
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/min_players/);
+  });
 });
 
 describe("GET /api/games/get/:bgg_id", () => {

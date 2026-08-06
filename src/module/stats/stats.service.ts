@@ -159,7 +159,16 @@ export const getOverallStats = async (): Promise<OverallStats> => {
     const result = aggregationResult[0];
 
     const formattedResult: OverallStats = {
-      summary: result.summary[0],
+      summary: result.summary[0] ?? {
+        totalGames: 0,
+        totalDesigners: 0,
+        totalPublishers: 0,
+        totalCategories: 0,
+        totalMechanics: 0,
+        averageRating: 0,
+        averageComplexity: 0,
+        yearRange: { min: 0, max: 0 },
+      },
       players: result.players,
       playtime: result.playtime,
       byYear: result.byYear,

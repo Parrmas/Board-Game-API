@@ -5,9 +5,27 @@ module.exports = {
   testMatch: ["**/*.test.ts"],
   setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
   clearMocks: true,
-  forceExit: true, // helps close lingering DB/handle references after suite completes
-  testTimeout: 20000, // mongodb-memory-server's first boot (binary download/cache) can be slow
+  forceExit: true,
+  testTimeout: 20000,
   transform: {
     "^.+\\.ts$": ["ts-jest", { tsconfig: "tsconfig.test.json" }],
+  },
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!src/server.ts",
+    "!src/config/**",
+    "!src/**/*.route.ts",
+    "!src/**/*.schema.ts",
+    "!src/**/*.type.ts",
+    "!src/**/*.model.ts",
+    "!src/swagger.json",
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 40,
+      functions: 40,
+      lines: 40,
+      statements: 40,
+    },
   },
 };
