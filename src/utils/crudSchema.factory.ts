@@ -11,13 +11,18 @@ export const bggIdParamSchema = z.object({
     .string()
     .min(1)
     .transform((val, ctx) => {
-      const ids = val
-        .split(",")
-        .map((id) => parseInt(id.trim(), 10))
-        .filter((id) => !isNaN(id));
-      if (ids.length === 0) {
-        ctx.addIssue({ code: "custom", message: "Invalid bgg_id format" });
-        return z.NEVER;
+      const tokens = val.split(",").map((t) => t.trim());
+      const ids: number[] = [];
+      for (const token of tokens) {
+        const id = parseInt(token, 10);
+        if (isNaN(id)) {
+          ctx.addIssue({
+            code: "custom",
+            message: `Invalid bgg_id: "${token}"`,
+          });
+          return z.NEVER;
+        }
+        ids.push(id);
       }
       return ids;
     }),

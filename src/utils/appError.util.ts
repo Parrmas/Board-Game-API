@@ -5,7 +5,7 @@ export class AppError extends Error {
     statusCode: number = 500,
     options?: ErrorOptions,
   ) {
-    super(message);
+    super(message, options);
     this.statusCode = statusCode;
     Object.setPrototypeOf(this, AppError.prototype);
   }

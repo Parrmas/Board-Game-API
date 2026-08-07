@@ -1,6 +1,6 @@
-// src/module/game/game.schema.ts
 import { z } from "zod";
 import { FETCH_MIN_LIMIT, FETCH_MAX_LIMIT } from "./game.type";
+import { bggIdParamSchema } from "../../utils/crudSchema.factory";
 
 const csvNumbers = () =>
   z
@@ -58,19 +58,4 @@ export const gameListQuerySchema = z
 
 export type GameListQuery = z.infer<typeof gameListQuerySchema>;
 
-export const bggIdParamSchema = z.object({
-  bgg_id: z
-    .string()
-    .min(1)
-    .transform((val, ctx) => {
-      const ids = val
-        .split(",")
-        .map((id) => parseInt(id.trim(), 10))
-        .filter((id) => !isNaN(id));
-      if (ids.length === 0) {
-        ctx.addIssue({ code: "custom", message: "Invalid bgg_id format" });
-        return z.NEVER;
-      }
-      return ids;
-    }),
-});
+export { bggIdParamSchema };
