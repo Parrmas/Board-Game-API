@@ -96,3 +96,43 @@ describe("bggIdParamSchema", () => {
     expect(result.success).toBe(false);
   });
 });
+
+describe("bggIdParamSchema — CSV edge cases", () => {
+  it("fails on a trailing comma (empty final token)", () => {
+    const result = bggIdParamSchema.safeParse({ bgg_id: "1,2," });
+    expect(result.success).toBe(false);
+  });
+
+  it("fails on a leading comma (empty first token)", () => {
+    const result = bggIdParamSchema.safeParse({ bgg_id: ",1,2" });
+    expect(result.success).toBe(false);
+  });
+
+  it("fails on a whitespace-only token between commas", () => {
+    const result = bggIdParamSchema.safeParse({ bgg_id: "1, ,3" });
+    expect(result.success).toBe(false);
+  });
+
+  it("fails on consecutive commas (double delimiter)", () => {
+    const result = bggIdParamSchema.safeParse({ bgg_id: "1,,3" });
+    expect(result.success).toBe(false);
+  });
+
+  it("fails on a string that is only whitespace", () => {
+    const result = bggIdParamSchema.safeParse({ bgg_id: "   " });
+    expect(result.success).toBe(false);
+  });
+
+  it("fails on a single trailing comma with no second value", () => {
+    const result = bggIdParamSchema.safeParse({ bgg_id: "42," });
+    expect(result.success).toBe(false);
+  });
+
+  it("still succeeds on a clean multi-id list with internal spacing", () => {
+    const result = bggIdParamSchema.safeParse({ bgg_id: "1, 2, 3" });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.bgg_id).toEqual([1, 2, 3]);
+    }
+  });
+});
