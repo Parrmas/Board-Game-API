@@ -6,17 +6,25 @@ import { AppError } from "./appError.util";
 interface ListQuery {
   limit: number;
   page: number;
+  name?: string;
 }
 
 export const createListController = <T = unknown>(
-  listService: (limit: number, page: number) => Promise<{ data: T[] }>,
+  listService: (
+    limit: number,
+    page: number,
+    name?: string,
+  ) => Promise<{ data: T[] }>,
 ) => {
   return async (req: Request, res: Response) => {
     try {
       // req.query has already been parsed + validated by validateSchema middleware
-      const { limit, page } = req.query as unknown as ListQuery;
+      const { limit, page, name } = req.query as unknown as ListQuery;
 
-      const result = await listService(limit, page);
+      const result =
+        name !== undefined
+          ? await listService(limit, page, name)
+          : await listService(limit, page);
       sendSuccess(res, result);
     } catch (error: unknown) {
       if (error instanceof AppError) {

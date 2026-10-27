@@ -6,4 +6,6 @@ export const categoryListQuerySchema = createListQuerySchema(
   FETCH_MAX_LIMIT,
 );
 
-export const categoryPopularQuerySchema = categoryListQuerySchema;
+export const categoryPopularQuerySchema = categoryListQuerySchema.omit({
+  name: true,
+});

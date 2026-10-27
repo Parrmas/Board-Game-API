@@ -27,6 +27,11 @@ const router = Router();
  *           minimum: 1
  *           default: 1
  *         description: Page number for pagination
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Filter by name (case-insensitive partial match)
  *     responses:
  *       200:
  *         description: List of mechanics with pagination info

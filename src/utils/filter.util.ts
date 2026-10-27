@@ -1,9 +1,6 @@
 import { GameFilters } from "../module/game/game.type";
 import Game from "../module/game/game.model";
-
-const escapeRegex = (str: string): string => {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-};
+import { escapeRegex } from "./regex.util";
 
 export const buildFilterForOverall = (filters: GameFilters) => {
   const query: any = {};
