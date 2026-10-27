@@ -1,5 +1,6 @@
 import { Model } from "mongoose";
 import { AppError } from "./appError.util";
+import { escapeRegex } from "./regex.util";
 
 export interface ListResult<T> {
   data: T[];
@@ -12,15 +13,16 @@ export const createListService = <T = unknown>(
   return async (
     limit: number = 10,
     page: number = 1,
+    name?: string,
   ): Promise<ListResult<T>> => {
     try {
       const skip = limit * (page - 1);
-      const data = await model
-        .find()
-        .limit(limit)
-        .skip(skip)
-        .sort({ name: 1 })
-        .lean();
+      const query = name
+        ? model.find({
+            name: { $regex: escapeRegex(name), $options: "i" },
+          } as any)
+        : model.find();
+      const data = await query.limit(limit).skip(skip).sort({ name: 1 }).lean();
       return { data: data as T[] };
     } catch (error) {
       console.error(`Error fetching ${entityName}: `, error);
