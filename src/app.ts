@@ -23,6 +23,9 @@ import routes from "./module";
 import swaggerSpec from "./config/swagger";
 
 const app: Application = express();
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1); // Trust first proxy in production
+}
 const CORS_WHITELIST = process.env.CORS_WHITELIST?.split(",") || [];
 
 // Middleware
