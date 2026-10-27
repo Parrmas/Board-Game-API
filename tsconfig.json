@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "CommonJS",
+    "module": "commonjs", // Use "node16" for Node.js 16+ module resolution; "CommonJS" for Node.js < 16
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
