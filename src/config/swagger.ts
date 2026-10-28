@@ -240,6 +240,10 @@ const options: swaggerJsdoc.Options = {
         name: "Publishers",
         description: "Publisher API endpoints",
       },
+      {
+        name: "Statistics",
+        description: "Statistics API endpoints",
+      },
     ],
   },
   apis: [

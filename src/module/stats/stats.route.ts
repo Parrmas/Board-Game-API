@@ -140,7 +140,7 @@ router.get(
  *         schema:
  *           type: integer
  *           default: 10
- *           minumum: 1
+ *           minimum: 1
  *           maximum: 50
  *         description: Number of games to return
  *     responses:

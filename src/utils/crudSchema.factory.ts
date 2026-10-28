@@ -4,7 +4,7 @@ export const createListQuerySchema = (minLimit: number, maxLimit: number) =>
   z.object({
     limit: z.coerce.number().int().min(minLimit).max(maxLimit).default(10),
     page: z.coerce.number().int().min(1).default(1),
-    name: z.string().trim().min(1).optional(),
+    name: z.string().trim().min(1).max(100).optional(),
   });
 
 export const bggIdParamSchema = z.object({

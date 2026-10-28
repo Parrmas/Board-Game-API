@@ -35,7 +35,8 @@ const router = Router();
  *         name: name
  *         schema:
  *           type: string
- *         description: Filter by name (case-insensitive partial match)
+ *           maxLength: 100
+ *         description: Filter by name (case-insensitive partial match, max 100 characters)
  *     responses:
  *       200:
  *         description: List of categories with pagination info
@@ -126,23 +127,26 @@ router.get(
  *             schema:
  *               type: object
  *               properties:
+ *                 success:
+ *                   type: boolean
  *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       bgg_id:
- *                         type: number
- *                       name:
- *                         type: string
- *                       description:
- *                         type: string
- *                       gameCount:
- *                         type: number
- *                         description: Number of games in this category
- *                 total:
- *                   type: number
- *                   description: Total number of categories with games
+ *                   type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           bgg_id:
+ *                             type: number
+ *                           name:
+ *                             type: string
+ *                           gameCount:
+ *                             type: number
+ *                             description: Number of games in this category
+ *                     totalCategory:
+ *                       type: number
+ *                       description: Total number of categories with games
  *       400:
  *         description: Invalid limit or page parameter
  *       500:

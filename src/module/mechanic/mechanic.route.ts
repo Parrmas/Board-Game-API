@@ -31,7 +31,8 @@ const router = Router();
  *         name: name
  *         schema:
  *           type: string
- *         description: Filter by name (case-insensitive partial match)
+ *           maxLength: 100
+ *         description: Filter by name (case-insensitive partial match, max 100 characters)
  *     responses:
  *       200:
  *         description: List of mechanics with pagination info
