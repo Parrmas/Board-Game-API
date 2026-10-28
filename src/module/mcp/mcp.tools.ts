@@ -4,12 +4,30 @@ import { AppError } from "../../utils/appError.util";
 import * as FilterUtil from "../../utils/filter.util";
 import * as GameService from "../game/game.service";
 import * as StatsService from "../stats/stats.service";
+import * as CategoryService from "../category/category.service";
+import * as MechanicService from "../mechanic/mechanic.service";
+import * as DesignerService from "../designer/designer.service";
+import * as PublisherService from "../publisher/publisher.service";
 import {
   FETCH_MAX_LIMIT,
   FETCH_MIN_LIMIT,
   GameFilters,
 } from "../game/game.type";
 import { toolError, toolResult, trimGames } from "./mcp.util";
+
+const referenceTypes = [
+  "category",
+  "mechanic",
+  "designer",
+  "publisher",
+] as const;
+
+const referenceServices = {
+  category: CategoryService,
+  mechanic: MechanicService,
+  designer: DesignerService,
+  publisher: PublisherService,
+};
 
 export const registerTools = (server: McpServer): void => {
   server.registerTool(
@@ -33,8 +51,8 @@ export const registerTools = (server: McpServer): void => {
       description:
         "Search games using optional filters. Results omit description. " +
         "The maximum limit is 50. categories, mechanics, designers, and " +
-        "publishers accept BGG ids; use list_reference_data to find those " +
-        "ids once that tool is available.",
+        "publishers accept BGG ids; use list_reference_data with a name " +
+        "search to find the reference BGG ids for these filters.",
       inputSchema: {
         limit: z
           .number()
@@ -99,7 +117,7 @@ export const registerTools = (server: McpServer): void => {
         "Get games by their BGG ids. Provide 1 to 50 ids. Results omit " +
         "description and include populated categories, mechanics, designers, " +
         "and publishers. Use list_reference_data to find reference BGG ids " +
-        "once that tool is available.",
+        "by searching for the reference names.",
       inputSchema: {
         bgg_ids: z.array(z.number().int()).min(1).max(50),
       },
@@ -110,6 +128,92 @@ export const registerTools = (server: McpServer): void => {
         return toolResult(
           trimGames(games as unknown as { data: Record<string, unknown>[] }),
         );
+      } catch (e) {
+        return toolError(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "get_popular_categories",
+    {
+      description:
+        "Get categories ranked by the number of games using each category. " +
+        "Categories are game classification labels. Returns category bgg_ids " +
+        "needed by the categories filter of search_games. The maximum limit is 50.",
+      inputSchema: {
+        limit: z
+          .number()
+          .int()
+          .min(FETCH_MIN_LIMIT)
+          .max(FETCH_MAX_LIMIT)
+          .default(10),
+        page: z.number().int().min(1).default(1),
+      },
+    },
+    async ({ limit, page }) => {
+      try {
+        return toolResult(await CategoryService.getPopular(limit, page));
+      } catch (e) {
+        return toolError(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "list_reference_data",
+    {
+      description:
+        "List category, mechanic, designer, or publisher reference records. " +
+        "Categories classify games, mechanics describe gameplay systems, " +
+        "designers are game creators, and publishers publish games. Returns " +
+        "bgg_ids needed by the categories, mechanics, designers, and publishers " +
+        "filters of search_games. Supports case-insensitive partial name search " +
+        "up to 100 characters and pagination; maximum limit is 50.",
+      inputSchema: {
+        type: z.enum(referenceTypes),
+        limit: z
+          .number()
+          .int()
+          .min(FETCH_MIN_LIMIT)
+          .max(FETCH_MAX_LIMIT)
+          .default(10),
+        page: z.number().int().min(1).default(1),
+        name: z.string().trim().min(1).max(100).optional(),
+      },
+    },
+    async ({ type, limit, page, name }) => {
+      try {
+        const service = referenceServices[type];
+        const result =
+          name === undefined
+            ? await service.list(limit, page)
+            : await service.list(limit, page, name);
+        return toolResult(result);
+      } catch (e) {
+        return toolError(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "get_reference_data",
+    {
+      description:
+        "Get category, mechanic, designer, or publisher records by BGG ids. " +
+        "Categories classify games, mechanics describe gameplay systems, " +
+        "designers are game creators, and publishers publish games. Returns " +
+        "reference records and bgg_ids needed by the matching categories, " +
+        "mechanics, designers, or publishers filter of search_games. Provide " +
+        "1 to 50 ids.",
+      inputSchema: {
+        type: z.enum(referenceTypes),
+        bgg_ids: z.array(z.number().int()).min(1).max(50),
+      },
+    },
+    async ({ type, bgg_ids }) => {
+      try {
+        return toolResult(await referenceServices[type].get(bgg_ids));
       } catch (e) {
         return toolError(e);
       }
