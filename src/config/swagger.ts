@@ -4,9 +4,10 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Board Game API",
+      title: "The Border Board Game API",
       version: "1.0.0",
-      description: "API for board game collection management",
+      description:
+        "API for managing the Border board game collection\n\n© 2026 The Border Board Game API & Thomas 'Parrmas' Tran. All rights reserved.",
     },
     servers: [
       {
