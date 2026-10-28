@@ -3,6 +3,7 @@ import { z } from "zod/v3";
 import { AppError } from "../../utils/appError.util";
 import * as FilterUtil from "../../utils/filter.util";
 import * as GameService from "../game/game.service";
+import * as StatsService from "../stats/stats.service";
 import {
   FETCH_MAX_LIMIT,
   FETCH_MIN_LIMIT,
@@ -109,6 +110,108 @@ export const registerTools = (server: McpServer): void => {
         return toolResult(
           trimGames(games as unknown as { data: Record<string, unknown>[] }),
         );
+      } catch (e) {
+        return toolError(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "get_top_rated_games",
+    {
+      description:
+        "Get games ranked by average rating, highest first. Results omit " +
+        "description. The maximum limit is 50.",
+      inputSchema: {
+        limit: z
+          .number()
+          .int()
+          .min(FETCH_MIN_LIMIT)
+          .max(FETCH_MAX_LIMIT)
+          .default(10),
+      },
+    },
+    async ({ limit }) => {
+      try {
+        const result = await StatsService.getTopRatedGames(limit);
+        return toolResult(
+          trimGames(result as unknown as { data: Record<string, unknown>[] }),
+        );
+      } catch (e) {
+        return toolError(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "get_most_complex_games",
+    {
+      description:
+        "Get games ranked by complexity weight, highest first. Results " +
+        "omit description. The maximum limit is 50.",
+      inputSchema: {
+        limit: z
+          .number()
+          .int()
+          .min(FETCH_MIN_LIMIT)
+          .max(FETCH_MAX_LIMIT)
+          .default(10),
+      },
+    },
+    async ({ limit }) => {
+      try {
+        const result = await StatsService.getMostComplexGames(limit);
+        return toolResult(
+          trimGames(result as unknown as { data: Record<string, unknown>[] }),
+        );
+      } catch (e) {
+        return toolError(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "get_best_games_for_players",
+    {
+      description:
+        "Get games ranked by average rating for the requested player count. " +
+        "Results omit description. The maximum limit is 50.",
+      inputSchema: {
+        player_count: z.number().int().positive(),
+        limit: z
+          .number()
+          .int()
+          .min(FETCH_MIN_LIMIT)
+          .max(FETCH_MAX_LIMIT)
+          .default(10),
+      },
+    },
+    async ({ player_count, limit }) => {
+      try {
+        const result = await StatsService.getBestGamesForPlayers(
+          limit,
+          player_count,
+        );
+        return toolResult(
+          trimGames(result as unknown as { data: Record<string, unknown>[] }),
+        );
+      } catch (e) {
+        return toolError(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "get_overall_stats",
+    {
+      description:
+        "Return collection-wide totals, player-count and playtime " +
+        "distributions, and games per year.",
+      inputSchema: {},
+    },
+    async () => {
+      try {
+        return toolResult(await StatsService.getOverallStats());
       } catch (e) {
         return toolError(e);
       }
