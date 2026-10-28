@@ -1,8 +1,11 @@
 import { Router, Request, Response } from "express";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { createMcpServer } from "./mcp.server";
+import { mcpLimiter } from "./mcp.rateLimit";
 
 const router = Router();
+
+router.use(mcpLimiter);
 
 router.post("/", async (req: Request, res: Response) => {
   const server = createMcpServer();
