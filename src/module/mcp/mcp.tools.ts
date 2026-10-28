@@ -1,6 +1,14 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod/v3";
+import { AppError } from "../../utils/appError.util";
 import * as FilterUtil from "../../utils/filter.util";
-import { toolError, toolResult } from "./mcp.util";
+import * as GameService from "../game/game.service";
+import {
+  FETCH_MAX_LIMIT,
+  FETCH_MIN_LIMIT,
+  GameFilters,
+} from "../game/game.type";
+import { toolError, toolResult, trimGames } from "./mcp.util";
 
 export const registerTools = (server: McpServer): void => {
   server.registerTool(
@@ -12,6 +20,95 @@ export const registerTools = (server: McpServer): void => {
     async () => {
       try {
         return toolResult(await FilterUtil.getFilterOptions());
+      } catch (e) {
+        return toolError(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "search_games",
+    {
+      description:
+        "Search games using optional filters. Results omit description. " +
+        "The maximum limit is 50. categories, mechanics, designers, and " +
+        "publishers accept BGG ids; use list_reference_data to find those " +
+        "ids once that tool is available.",
+      inputSchema: {
+        limit: z
+          .number()
+          .int()
+          .min(FETCH_MIN_LIMIT)
+          .max(FETCH_MAX_LIMIT)
+          .default(10),
+        page: z.number().int().min(1).default(1),
+        name: z.string().trim().min(1).max(100).optional(),
+        min_players: z.number().int().positive().optional(),
+        max_players: z.number().int().positive().optional(),
+        min_playtime: z.number().int().nonnegative().optional(),
+        max_playtime: z.number().int().nonnegative().optional(),
+        min_rating: z.number().min(0).max(10).optional(),
+        max_rating: z.number().min(0).max(10).optional(),
+        min_complexity: z.number().min(0).max(5).optional(),
+        max_complexity: z.number().min(0).max(5).optional(),
+        categories: z.array(z.number().int()).max(50).optional(),
+        mechanics: z.array(z.number().int()).max(50).optional(),
+        designers: z.array(z.number().int()).max(50).optional(),
+        publishers: z.array(z.number().int()).max(50).optional(),
+      },
+    },
+    async ({ limit, page, ...filters }) => {
+      if (
+        filters.min_players !== undefined &&
+        filters.max_players !== undefined &&
+        filters.min_players > filters.max_players
+      ) {
+        return toolError(
+          new AppError("min_players must be <= max_players", 400),
+        );
+      }
+
+      if (
+        filters.min_rating !== undefined &&
+        filters.max_rating !== undefined &&
+        filters.min_rating > filters.max_rating
+      ) {
+        return toolError(new AppError("min_rating must be <= max_rating", 400));
+      }
+
+      try {
+        const games = await GameService.list(
+          limit,
+          page,
+          filters as GameFilters,
+        );
+        return toolResult(
+          trimGames(games as unknown as { data: Record<string, unknown>[] }),
+        );
+      } catch (e) {
+        return toolError(e);
+      }
+    },
+  );
+
+  server.registerTool(
+    "get_games",
+    {
+      description:
+        "Get games by their BGG ids. Provide 1 to 50 ids. Results omit " +
+        "description and include populated categories, mechanics, designers, " +
+        "and publishers. Use list_reference_data to find reference BGG ids " +
+        "once that tool is available.",
+      inputSchema: {
+        bgg_ids: z.array(z.number().int()).min(1).max(50),
+      },
+    },
+    async ({ bgg_ids }) => {
+      try {
+        const games = await GameService.get(bgg_ids);
+        return toolResult(
+          trimGames(games as unknown as { data: Record<string, unknown>[] }),
+        );
       } catch (e) {
         return toolError(e);
       }
