@@ -21,7 +21,7 @@ A RESTful API for managing and exploring a board game collection — games, cate
 
 ## Architecture
 
-The codebase follows a modular, feature-based structure. Each domain (game, category, mechanic, designer, publisher, auth, stats) lives under `src/module/<feature>/` with its own:
+The codebase follows a modular, feature-based structure. Each domain (game, category, mechanic, designer, publisher, auth, stats, mcp) lives under `src/module/<feature>/` with its own:
 
 ```
 <feature>.model.ts       # Mongoose schema + TypeScript interface
@@ -106,7 +106,62 @@ Full request/response schemas are in Swagger (`/docs`). Endpoint groups:
 | `/api/games`      | List/filter/search games, filter option ranges    |
 | `/api/categories` | List, lookup by id, popularity ranking            |
 | `/api/mechanics`  | List, lookup by id                                |
-|                   |
+| `/api/designers`  | List and look up designers                        |
+| `/api/publishers` | List and look up publishers                       |
+| `/api/stats`      | Collection statistics and game rankings           |
+| `/api/mcp`        | Stateless MCP tools for searching and exploring games |
+
+## MCP server
+
+The API provides a read-only, public Model Context Protocol endpoint using
+stateless Streamable HTTP with JSON responses. It is available at
+`https://the-border-bg-api.onrender.com/api/mcp` and locally at
+`http://localhost:5000/api/mcp`. No authentication is required. Requests are
+limited to 60 per minute per IP.
+
+| Tool | Description |
+| --- | --- |
+| `get_filter_options` | Get min/max ranges for players, playtime, rating, and complexity. |
+| `search_games` | Search games with optional filters and pagination. |
+| `get_games` | Get games by BoardGameGeek IDs. |
+| `get_top_rated_games` | List games ranked by average rating. |
+| `get_most_complex_games` | List games ranked by complexity. |
+| `get_best_games_for_players` | Find highly rated games for a player count. |
+| `get_overall_stats` | Get collection totals and distributions. |
+| `get_popular_categories` | Rank categories by the number of games using them. |
+| `list_reference_data` | Search and page through categories, mechanics, designers, or publishers. |
+| `get_reference_data` | Get category, mechanic, designer, or publisher records by BGG IDs. |
+
+### Client setup
+
+For Claude Code, add the remote HTTP server:
+
+```sh
+claude mcp add --transport http board-game-api https://the-border-bg-api.onrender.com/api/mcp
+```
+
+Claude Desktop and other stdio-only clients can connect through `mcp-remote`:
+
+```sh
+npx mcp-remote https://the-border-bg-api.onrender.com/api/mcp
+```
+
+Example client configuration:
+
+```json
+{
+  "mcpServers": {
+    "board-game-api": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://the-border-bg-api.onrender.com/api/mcp"]
+    }
+  }
+}
+```
+
+Browser-based MCP clients are blocked in production by the CORS whitelist;
+desktop and CLI clients are unaffected. Search results omit game descriptions,
+and the saved-games endpoints are not exposed through MCP.
 
 ## Key learnings & principles
 

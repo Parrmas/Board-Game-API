@@ -6,6 +6,7 @@ import designerRoutes from "./designer/designer.route";
 import publisherRoutes from "./publisher/publisher.route";
 import statsRoutes from "./stats/stats.route";
 import authRoutes from "./auth/auth.route";
+import mcpRoutes from "./mcp/mcp.route";
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.use("/categories", categoryRoutes);
 router.use("/designers", designerRoutes);
 router.use("/mechanics", mechanicRoutes);
 router.use("/publishers", publisherRoutes);
+router.use("/mcp", mcpRoutes);
 
 export default router;
