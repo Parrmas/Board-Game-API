@@ -9,6 +9,25 @@ A RESTful API for managing and exploring a board game collection — games, cate
 - Swagger UI: https://the-border-bg-api.onrender.com/docs/
 - API root: https://the-border-bg-api.onrender.com/api/
 
+## Try the MCP server
+
+The API ships a read-only MCP server so an AI assistant can search the collection with natural language.
+
+```sh
+claude mcp add --transport http board-game-api https://the-border-bg-api.onrender.com/api/mcp
+```
+
+Claude Desktop users can find the `mcp-remote` config in the "MCP server" section below.
+
+Try asking:
+
+- "Find two-player games by Reiner Knizia under 60 minutes." (`list_reference_data` to find the designer id, then `search_games`)
+- "What are the best games for exactly 5 players?" (`get_best_games_for_players`)
+- "Which game has the highest complexity?" (`get_most_complex_games`)
+- "How many games are in the collection?" (`get_overall_stats`)
+
+The service runs on a free hosting tier, so the first request after a period of inactivity can take up to a minute while it wakes up; later requests are fast.
+
 ## Tech stack
 
 - **Runtime:** Node.js, TypeScript
@@ -37,7 +56,8 @@ Shared concerns live in `src/utils/` and `src/middleware/`:
 - `appError.util.ts` — typed application errors with HTTP status codes, thrown by services and caught by controllers
 - `crudService.factory.ts` / `crudController.factory.ts` — generic `list`/`get` factories used by the simpler lookup entities (category, mechanic, designer, publisher) to avoid duplicating identical pagination/error-handling logic
 - `populate.util.ts` — generic related-data population (e.g. attaching full category/mechanic/designer/publisher objects to a game from their id arrays)
-- `cookie.util.ts` — sets/clears the httpOnly refresh-token cookie, scoped to `/api/auth`
+- `cookieHelper.util.ts` — sets/clears the httpOnly refresh-token cookie, scoped to `/api/auth`
+- `mcp/` module files (`mcp.util`, `mcp.tools`, `mcp.server`, `mcp.route`, `mcp.rateLimit`) — tools call the existing services directly
 - `auth.middleware.ts` — JWT verification, attaches `req.user`
 - `validateSchema.middleware.ts` — query/body validation (limit bounds, registration payload)
 
@@ -162,6 +182,14 @@ Example client configuration:
 Browser-based MCP clients are blocked in production by the CORS whitelist;
 desktop and CLI clients are unaffected. Search results omit game descriptions,
 and the saved-games endpoints are not exposed through MCP.
+
+## How the MCP server was built
+
+The design came first in a written design doc, followed by a six-task implementation plan. Each task was small enough to review on its own. Every task was test-first: its new tests had to fail before the implementation existed. For one task, that failure was confirmed separately by stashing the implementation and rerunning the tests.
+
+An AI coding agent wrote the code from per-task prompts and was forbidden from committing. Each task was reviewed by hand, including the diff, imports, and call shapes, before it was committed. Review noted in the PR that installing the SDK moved Express from 5.1.0 to 5.3.0 in the lockfile. A throwaway spike, run before any tool was written, found that the SDK reports input-validation failures as tool results with `isError: true` rather than JSON-RPC errors. Since `getBestGamesForPlayers` takes `(limit, playerCount)`, the reverse of the tool's input order, a spy test pins the argument order. The MCP module is isolated: nothing outside `src/module/index.ts` imports from it.
+
+The final state had 43 test suites and coverage above the enforced thresholds. It was verified live on Render and from Claude Desktop.
 
 ## Key learnings & principles
 
