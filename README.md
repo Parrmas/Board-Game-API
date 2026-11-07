@@ -84,6 +84,8 @@ PORT=5000
 
 `MONGO_URI`, `JWT_SECRET`, and `REFRESH_TOKEN_SECRET` are validated on startup (`src/config/validateEnv.ts`) — the server exits immediately if any is missing.
 
+The UI must send API requests that use the refresh-token cookie with `credentials: "include"`. Its origin must also be listed in `CORS_WHITELIST`.
+
 A `.local.env` file (gitignored) can be used to override `.env` values for local development without touching the committed file.
 
 ### Running the server
