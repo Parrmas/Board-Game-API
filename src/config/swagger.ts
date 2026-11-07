@@ -136,14 +136,22 @@ const options: swaggerJsdoc.Options = {
         },
         AuthResponse: {
           type: "object",
+          required: ["success", "data"],
           properties: {
-            success: { type: "boolean" },
+            success: { type: "boolean", example: true },
             data: {
-              type: "object",
-              properties: {
-                token: { type: "string" },
-                message: { type: "string" },
-              },
+              oneOf: [
+                {
+                  type: "object",
+                  required: ["token"],
+                  properties: { token: { type: "string" } },
+                },
+                {
+                  type: "object",
+                  required: ["message"],
+                  properties: { message: { type: "string" } },
+                },
+              ],
             },
           },
         },
@@ -196,20 +204,6 @@ const options: swaggerJsdoc.Options = {
               example: {
                 success: false,
                 message: "Not Authorized",
-              },
-            },
-          },
-        },
-        AlreadyLoggedInError: {
-          description: "User is already logged in",
-          content: {
-            "application/json": {
-              schema: {
-                $ref: "#/components/schemas/ErrorResponse",
-              },
-              example: {
-                success: false,
-                message: "User is already logged in",
               },
             },
           },

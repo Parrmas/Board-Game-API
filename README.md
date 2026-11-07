@@ -63,7 +63,7 @@ Create a `.env` file in the project root:
 ```env
 MONGO_URI=mongodb+srv://<user>:<password>@<cluster>/<db>
 JWT_SECRET=your-secret-key
-JWT_EXPIRE_IN=24h
+JWT_EXPIRE_IN=15m
 REFRESH_TOKEN_SECRET=your-refresh-secret-key
 REFRESH_TOKEN_EXPIRE_IN=7d
 API_URL=http://localhost:5000/api
@@ -75,12 +75,14 @@ PORT=5000
 | ------------------------- | ------------------- | --------------------------------------------- |
 | `MONGO_URI`               | Yes                 | MongoDB connection string                     |
 | `JWT_SECRET`              | Yes                 | Secret used to sign/verify access tokens      |
-| `JWT_EXPIRE_IN`           | No (default `24h`)  | Access token expiry duration                  |
+| `JWT_EXPIRE_IN`           | No (default `15m`)  | Access token expiry duration                  |
 | `REFRESH_TOKEN_SECRET`    | Yes                 | Secret used to sign/verify refresh tokens     |
 | `REFRESH_TOKEN_EXPIRE_IN` | No (default `7d`)   | Refresh token expiry duration                 |
 | `API_URL`                 | No                  | Base URL used in Swagger's server config      |
 | `CORS_WHITELIST`          | No                  | Comma-separated allowed origins in production |
 | `PORT`                    | No (default `5000`) | Server port                                   |
+
+Sessions are restored by exchanging the httpOnly refresh-token cookie at `/api/auth/refresh-token` for a new access token.
 
 `MONGO_URI`, `JWT_SECRET`, and `REFRESH_TOKEN_SECRET` are validated on startup (`src/config/validateEnv.ts`) — the server exits immediately if any is missing.
 
@@ -102,15 +104,15 @@ By default the API runs at `http://localhost:5000`, with interactive docs at `ht
 
 Full request/response schemas are in Swagger (`/docs`). Endpoint groups:
 
-| Base path         | Description                                       |
-| ----------------- | ------------------------------------------------- |
-| `/api/auth`       | Register, login/logout, current user, saved games |
-| `/api/games`      | List/filter/search games, filter option ranges    |
-| `/api/categories` | List, lookup by id, popularity ranking            |
-| `/api/mechanics`  | List, lookup by id                                |
-| `/api/designers`  | List and look up designers                        |
-| `/api/publishers` | List and look up publishers                       |
-| `/api/stats`      | Collection statistics and game rankings           |
+| Base path         | Description                                           |
+| ----------------- | ----------------------------------------------------- |
+| `/api/auth`       | Register, login/logout, current user, saved games     |
+| `/api/games`      | List/filter/search games, filter option ranges        |
+| `/api/categories` | List, lookup by id, popularity ranking                |
+| `/api/mechanics`  | List, lookup by id                                    |
+| `/api/designers`  | List and look up designers                            |
+| `/api/publishers` | List and look up publishers                           |
+| `/api/stats`      | Collection statistics and game rankings               |
 | `/api/mcp`        | Stateless MCP tools for searching and exploring games |
 
 ## MCP server
@@ -121,18 +123,18 @@ stateless Streamable HTTP with JSON responses. It is available at
 `http://localhost:5000/api/mcp`. No authentication is required. Requests are
 limited to 60 per minute per IP.
 
-| Tool | Description |
-| --- | --- |
-| `get_filter_options` | Get min/max ranges for players, playtime, rating, and complexity. |
-| `search_games` | Search games with optional filters and pagination. |
-| `get_games` | Get games by BoardGameGeek IDs. |
-| `get_top_rated_games` | List games ranked by average rating. |
-| `get_most_complex_games` | List games ranked by complexity. |
-| `get_best_games_for_players` | Find highly rated games for a player count. |
-| `get_overall_stats` | Get collection totals and distributions. |
-| `get_popular_categories` | Rank categories by the number of games using them. |
-| `list_reference_data` | Search and page through categories, mechanics, designers, or publishers. |
-| `get_reference_data` | Get category, mechanic, designer, or publisher records by BGG IDs. |
+| Tool                         | Description                                                              |
+| ---------------------------- | ------------------------------------------------------------------------ |
+| `get_filter_options`         | Get min/max ranges for players, playtime, rating, and complexity.        |
+| `search_games`               | Search games with optional filters and pagination.                       |
+| `get_games`                  | Get games by BoardGameGeek IDs.                                          |
+| `get_top_rated_games`        | List games ranked by average rating.                                     |
+| `get_most_complex_games`     | List games ranked by complexity.                                         |
+| `get_best_games_for_players` | Find highly rated games for a player count.                              |
+| `get_overall_stats`          | Get collection totals and distributions.                                 |
+| `get_popular_categories`     | Rank categories by the number of games using them.                       |
+| `list_reference_data`        | Search and page through categories, mechanics, designers, or publishers. |
+| `get_reference_data`         | Get category, mechanic, designer, or publisher records by BGG IDs.       |
 
 ### Client setup
 

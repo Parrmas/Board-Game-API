@@ -21,7 +21,7 @@ const router = Router();
  *             $ref: '#/components/schemas/RegisterRequest'
  *     responses:
  *       201:
- *         description: Successfully registered, returns a JWT token
+ *         description: Successfully registered
  *         content:
  *           application/json:
  *             schema:
@@ -71,12 +71,6 @@ router.post(
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *       400:
- *         description: User is already logged in
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/responses/AlreadyLoggedInError'
  */
 router.post("/get-token", authLimiter, AuthController.login);
 
@@ -136,7 +130,9 @@ router.post("/invalidate-token", authenticateToken, AuthController.logout);
  *   get:
  *     summary: Get user details
  *     tags: [Authentication]
- *     description: Returns user details if not logged in, otherwise returns error
+ *     security:
+ *       - BearerAuth: []
+ *     description: Returns details for the authenticated user
  *     responses:
  *       200:
  *         description: User details
@@ -144,12 +140,8 @@ router.post("/invalidate-token", authenticateToken, AuthController.logout);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserResponse'
- *       400:
- *         description: User is already logged in
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/responses/AlreadyLoggedInError'
+ *      401:
+ *        $ref: '#/components/responses/UnauthorizedError'
  */
 router.get("/user", authenticateToken, AuthController.getUser);
 
