@@ -158,7 +158,7 @@ export const verifyToken = async (token: string): Promise<JwtPayload> => {
 };
 
 export const getUserById = async (userId: string) => {
-  const user = await User.findById(userId).lean();
+  const user = await User.findById(userId).select("-__v -isLoggedIn").lean();
   if (!user) {
     throw new AppError("User not found", 404);
   }

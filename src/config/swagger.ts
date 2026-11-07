@@ -153,8 +153,6 @@ const options: swaggerJsdoc.Options = {
             "lastName",
             "role",
             "fav_games_ids",
-            "isLoggedIn",
-            "__v",
           ],
           properties: {
             _id: { type: "string" },
@@ -167,12 +165,6 @@ const options: swaggerJsdoc.Options = {
               type: "array",
               items: { type: "number" },
             },
-            isLoggedIn: {
-              type: "boolean",
-              description:
-                "Informational login status; it does not determine this request's authentication.",
-            },
-            __v: { type: "integer" },
           },
         },
         UserResponse: {

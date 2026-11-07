@@ -28,7 +28,27 @@ describe("Auth flow", () => {
       .get("/api/auth/user")
       .set("Authorization", `Bearer ${token}`);
     expect(meRes.status).toBe(200);
-    expect(meRes.body.data.email).toBe(user.email);
+    expect(meRes.body.data).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        email: user.email,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: "user",
+        fav_games_ids: [],
+      }),
+    );
+    for (const field of [
+      "__v",
+      "isLoggedIn",
+      "password",
+      "refreshTokenHash",
+      "created_at",
+      "updated_at",
+    ]) {
+      expect(meRes.body.data).not.toHaveProperty(field);
+    }
   });
 
   it("refreshes tokens via cookie and rejects reused refresh tokens", async () => {
