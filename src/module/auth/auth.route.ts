@@ -140,8 +140,8 @@ router.post("/invalidate-token", authenticateToken, AuthController.logout);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserResponse'
- *      401:
- *        $ref: '#/components/responses/UnauthorizedError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
  */
 router.get("/user", authenticateToken, AuthController.getUser);
 
@@ -153,7 +153,7 @@ router.get("/user", authenticateToken, AuthController.getUser);
  *     tags: [Authentication]
  *     security:
  *       - BearerAuth: []
- *     description: Returns saved games if user is logged in
+ *     description: Returns the user's saved games with populated categories, mechanics, designers, and publishers
  *     responses:
  *       200:
  *         description: List of saved games
@@ -168,7 +168,7 @@ router.get("/profile-games", authenticateToken, AuthController.getProfileGames);
 
 /**
  * @swagger
- * /auth/add-favorite-game/{bgg_id}:
+ * /auth/profile-games/{bgg_id}:
  *   post:
  *     summary: Add a game to the logged-in user's saved games
  *     tags: [Authentication]
@@ -182,7 +182,7 @@ router.get("/profile-games", authenticateToken, AuthController.getProfileGames);
  *           type: integer
  *     responses:
  *       200:
- *         description: Updated list of saved game bgg_ids
+ *         description: Updated list of saved game objects with populated categories, mechanics, designers, and publishers
  *         content:
  *           application/json:
  *             schema:
@@ -198,7 +198,7 @@ router.post(
 
 /**
  * @swagger
- * /auth/remove-favorite-game/{bgg_id}:
+ * /auth/profile-games/{bgg_id}:
  *   delete:
  *     summary: Remove a game from the logged-in user's saved games
  *     tags: [Authentication]
@@ -212,7 +212,7 @@ router.post(
  *           type: integer
  *     responses:
  *       200:
- *         description: Updated list of saved game bgg_ids
+ *         description: Updated list of saved game objects with populated categories, mechanics, designers, and publishers
  *         content:
  *           application/json:
  *             schema:

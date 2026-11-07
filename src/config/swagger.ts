@@ -41,61 +41,49 @@ const options: swaggerJsdoc.Options = {
             thumbnail_url: { type: "string" },
             average_rating: { type: "number" },
             complexity_weight: { type: "number" },
-            category: {
-              type: "object",
-              properties: {
-                bgg_id: { type: "string" },
-                name: { type: "string" },
-              },
+            categories: {
+              type: "array",
+              items: { $ref: "#/components/schemas/Category" },
             },
-            mechanic: {
-              type: "object",
-              properties: {
-                bgg_id: { type: "string" },
-                name: { type: "string" },
-              },
+            mechanics: {
+              type: "array",
+              items: { $ref: "#/components/schemas/Mechanic" },
             },
-            designer: {
-              type: "object",
-              properties: {
-                bgg_id: { type: "string" },
-                name: { type: "string" },
-              },
+            designers: {
+              type: "array",
+              items: { $ref: "#/components/schemas/Designer" },
             },
-            publisher: {
-              type: "object",
-              properties: {
-                bgg_id: { type: "string" },
-                name: { type: "string" },
-              },
+            publishers: {
+              type: "array",
+              items: { $ref: "#/components/schemas/Publisher" },
             },
           },
         },
         Category: {
           type: "object",
           properties: {
-            bgg_id: { type: "string" },
+            bgg_id: { type: "number" },
             name: { type: "string" },
           },
         },
         Designer: {
           type: "object",
           properties: {
-            bgg_id: { type: "string" },
+            bgg_id: { type: "number" },
             name: { type: "string" },
           },
         },
         Mechanic: {
           type: "object",
           properties: {
-            bgg_id: { type: "string" },
+            bgg_id: { type: "number" },
             name: { type: "string" },
           },
         },
         Publisher: {
           type: "object",
           properties: {
-            bgg_id: { type: "string" },
+            bgg_id: { type: "number" },
             name: { type: "string" },
           },
         },
@@ -155,34 +143,55 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
+        User: {
+          type: "object",
+          required: [
+            "_id",
+            "email",
+            "username",
+            "firstName",
+            "lastName",
+            "role",
+            "fav_games_ids",
+            "isLoggedIn",
+            "__v",
+          ],
+          properties: {
+            _id: { type: "string" },
+            email: { type: "string", format: "email" },
+            username: { type: "string" },
+            firstName: { type: "string" },
+            lastName: { type: "string" },
+            role: { type: "string", enum: ["user", "admin"] },
+            fav_games_ids: {
+              type: "array",
+              items: { type: "number" },
+            },
+            isLoggedIn: {
+              type: "boolean",
+              description:
+                "Informational login status; it does not determine this request's authentication.",
+            },
+            __v: { type: "integer" },
+          },
+        },
         UserResponse: {
           type: "object",
+          required: ["success", "data"],
           properties: {
-            success: { type: "boolean" },
-            data: {
-              type: "object",
-              properties: {
-                id: { type: "string" },
-                username: { type: "string" },
-                email: { type: "string" },
-                savedGameIds: {
-                  type: "array",
-                  items: { type: "number" },
-                },
-              },
-            },
-            message: { type: "string" },
+            success: { type: "boolean", example: true },
+            data: { $ref: "#/components/schemas/User" },
           },
         },
         ProfileGamesResponse: {
           type: "object",
+          required: ["success", "data"],
           properties: {
-            success: { type: "boolean" },
+            success: { type: "boolean", example: true },
             data: {
               type: "array",
-              items: { type: "number" },
+              items: { $ref: "#/components/schemas/Game" },
             },
-            message: { type: "string" },
           },
         },
         ErrorResponse: {
