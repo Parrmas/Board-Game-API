@@ -104,16 +104,17 @@ By default the API runs at `http://localhost:5000`, with interactive docs at `ht
 
 Full request/response schemas are in Swagger (`/docs`). Endpoint groups:
 
-| Base path         | Description                                           |
-| ----------------- | ----------------------------------------------------- |
-| `/api/auth`       | Register, login/logout, current user, saved games     |
-| `/api/games`      | List/filter/search games, filter option ranges        |
-| `/api/categories` | List, lookup by id, popularity ranking                |
-| `/api/mechanics`  | List, lookup by id                                    |
-| `/api/designers`  | List and look up designers                            |
-| `/api/publishers` | List and look up publishers                           |
-| `/api/stats`      | Collection statistics and game rankings               |
-| `/api/mcp`        | Stateless MCP tools for searching and exploring games |
+| Base path          | Description                                           |
+| ------------------ | ----------------------------------------------------- |
+| `/api/auth`        | Register, login/logout, current user, saved games     |
+| `/api/games`       | List/filter/search games, filter option ranges        |
+| `/api/games/count` | Count games matching the supported filters            |
+| `/api/categories`  | List, lookup by id, popularity ranking                |
+| `/api/mechanics`   | List, lookup by id                                    |
+| `/api/designers`   | List and look up designers                            |
+| `/api/publishers`  | List and look up publishers                           |
+| `/api/stats`       | Collection statistics and game rankings               |
+| `/api/mcp`         | Stateless MCP tools for searching and exploring games |
 
 ## MCP server
 
