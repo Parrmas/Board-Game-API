@@ -20,7 +20,7 @@ export const login = async (req: Request, res: Response) => {
     const result = await AuthService.login(loginData);
 
     setRefreshTokenCookie(res, result.refreshToken); // Set refresh token in HTTP-only cookie
-    sendSuccess(res, result);
+    sendSuccess(res, { token: result.token });
   } catch (error: any) {
     if (error instanceof AppError) {
       return sendError(res, error.statusCode, error.message);

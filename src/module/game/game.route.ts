@@ -2,7 +2,11 @@ import express from "express";
 import * as GameController from "./game.controller";
 import { FETCH_MAX_LIMIT, FETCH_MIN_LIMIT } from "./game.type";
 import { validateSchema } from "../../middleware/validateSchema.middleware";
-import { gameListQuerySchema, bggIdParamSchema } from "./game.schema";
+import {
+  gameCountQuerySchema,
+  gameListQuerySchema,
+  bggIdParamSchema,
+} from "./game.schema";
 
 const router = express.Router();
 
@@ -117,6 +121,108 @@ router.get(
   "/list",
   validateSchema(gameListQuerySchema, "query"),
   GameController.list,
+);
+
+/**
+ * @swagger
+ * /games/count:
+ *   get:
+ *     summary: Count games matching filters
+ *     tags: [Games]
+ *     parameters:
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Filter by game name (case-insensitive partial match)
+ *       - in: query
+ *         name: min_players
+ *         schema:
+ *           type: integer
+ *         description: Minimum number of players
+ *       - in: query
+ *         name: max_players
+ *         schema:
+ *           type: integer
+ *         description: Maximum number of players
+ *       - in: query
+ *         name: min_playtime
+ *         schema:
+ *           type: integer
+ *         description: Minimum playtime in minutes
+ *       - in: query
+ *         name: max_playtime
+ *         schema:
+ *           type: integer
+ *         description: Maximum playtime in minutes
+ *       - in: query
+ *         name: min_rating
+ *         schema:
+ *           type: number
+ *           format: float
+ *         description: Minimum average rating
+ *       - in: query
+ *         name: max_rating
+ *         schema:
+ *           type: number
+ *           format: float
+ *         description: Maximum average rating
+ *       - in: query
+ *         name: min_complexity
+ *         schema:
+ *           type: number
+ *           format: float
+ *         description: Minimum complexity weight
+ *       - in: query
+ *         name: max_complexity
+ *         schema:
+ *           type: number
+ *           format: float
+ *         description: Maximum complexity weight
+ *       - in: query
+ *         name: categories
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of category bbg_ids
+ *       - in: query
+ *         name: mechanics
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of mechanic bbg_ids
+ *       - in: query
+ *         name: designers
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of designer bbg_ids
+ *       - in: query
+ *         name: publishers
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of publisher bbg_ids
+ *     responses:
+ *       200:
+ *         description: Count of matching games
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *       400:
+ *         description: Invalid query parameters
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/count",
+  validateSchema(gameCountQuerySchema, "query"),
+  GameController.count,
 );
 
 /**

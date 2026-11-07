@@ -19,41 +19,31 @@ describe("cookieHelper.util", () => {
     process.env.NODE_ENV = originalEnv;
   });
 
-  it("sets the refresh cookie with httpOnly/sameSite/path, secure=false outside production", () => {
-    process.env.NODE_ENV = "test";
-    const res = mockRes();
-    setRefreshTokenCookie(res, "sometoken");
+  it.each([
+    ["test", "lax", false],
+    ["production", "none", true],
+  ] as const)("sets and clears the refresh cookie correctly in %s", (environment, sameSite, secure) => {
+    process.env.NODE_ENV = environment;
+    const setRes = mockRes();
+    const clearRes = mockRes();
 
-    expect(res.cookie).toHaveBeenCalledWith(
+    setRefreshTokenCookie(setRes, "sometoken");
+    clearRefreshTokenCookie(clearRes);
+
+    expect(setRes.cookie).toHaveBeenCalledWith(
       REFRESH_COOKIE_NAME,
       "sometoken",
       expect.objectContaining({
         httpOnly: true,
-        secure: false,
-        sameSite: "strict",
+        secure,
+        sameSite,
         path: "/api/auth",
       }),
     );
-  });
-
-  it("sets secure=true when NODE_ENV is production", () => {
-    process.env.NODE_ENV = "production";
-    const res = mockRes();
-    setRefreshTokenCookie(res, "sometoken");
-
-    expect(res.cookie).toHaveBeenCalledWith(
-      REFRESH_COOKIE_NAME,
-      "sometoken",
-      expect.objectContaining({ secure: true }),
-    );
-  });
-
-  it("clears the refresh cookie scoped to /api/auth", () => {
-    const res = mockRes();
-    clearRefreshTokenCookie(res);
-
-    expect(res.clearCookie).toHaveBeenCalledWith(REFRESH_COOKIE_NAME, {
+    expect(clearRes.clearCookie).toHaveBeenCalledWith(REFRESH_COOKIE_NAME, {
       path: "/api/auth",
+      sameSite,
+      secure,
     });
   });
 });

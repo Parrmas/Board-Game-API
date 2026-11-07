@@ -80,6 +80,91 @@ describe("GET /api/games/list", () => {
   });
 });
 
+describe("GET /api/games/count", () => {
+  const games = [
+    {
+      _id: "g1",
+      bgg_id: 1,
+      name: "Catan",
+      description: "Trade and build",
+      year_published: 1995,
+      min_players: 3,
+      max_players: 4,
+      playing_time: 90,
+      min_playtime: 60,
+      max_playtime: 90,
+      min_age: 10,
+      image_url: "u",
+      thumbnail_url: "u",
+      average_rating: 7.2,
+      complexity_weight: 2.3,
+    },
+    {
+      _id: "g2",
+      bgg_id: 2,
+      name: "Chess",
+      description: "Strategy",
+      year_published: 1475,
+      min_players: 2,
+      max_players: 2,
+      playing_time: 30,
+      min_playtime: 10,
+      max_playtime: 30,
+      min_age: 6,
+      image_url: "u",
+      thumbnail_url: "u",
+      average_rating: 8,
+      complexity_weight: 3,
+    },
+  ];
+
+  it("returns the total number of games without filters", async () => {
+    await Game.create(games);
+
+    const res = await request(app).get("/api/games/count");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ success: true, data: { total: 2 } });
+  });
+
+  it("counts games matching filters", async () => {
+    await Game.create(games);
+
+    const res = await request(app).get(
+      "/api/games/count?min_players=3&max_players=4",
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ success: true, data: { total: 1 } });
+  });
+
+  it("filters counts by name", async () => {
+    await Game.create(games);
+
+    const res = await request(app).get("/api/games/count?name=catan");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ success: true, data: { total: 1 } });
+  });
+
+  it.each([
+    ["min_players=6&max_players=2", /min_players/],
+    ["min_rating=8&max_rating=2", /min_rating/],
+  ])("rejects invalid range %s", async (query, message) => {
+    const res = await request(app).get(`/api/games/count?${query}`);
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(message);
+  });
+
+  it("returns zero for an empty collection", async () => {
+    const res = await request(app).get("/api/games/count");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ success: true, data: { total: 0 } });
+  });
+});
+
 describe("GET /api/games/get/:bgg_id", () => {
   it("returns games matching the given bgg_ids", async () => {
     await Game.create([

@@ -21,6 +21,13 @@ testControllerErrorBranches(app, {
 });
 
 testControllerErrorBranches(app, {
+  label: "GET /api/games/count",
+  method: "get",
+  url: "/api/games/count",
+  getSpy: () => jest.spyOn(GameService, "count"),
+});
+
+testControllerErrorBranches(app, {
   label: "GET /api/stats/overall",
   method: "get",
   url: "/api/stats/overall",

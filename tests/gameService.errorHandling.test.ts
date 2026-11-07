@@ -28,4 +28,15 @@ describe("GameService error handling", () => {
       statusCode: 500,
     });
   });
+
+  it("count wraps DB errors in an AppError with status 500", async () => {
+    jest.spyOn(Game, "countDocuments").mockImplementation(() => {
+      throw new Error("connection lost");
+    });
+
+    await expect(GameService.count({})).rejects.toThrow(AppError);
+    await expect(GameService.count({})).rejects.toMatchObject({
+      statusCode: 500,
+    });
+  });
 });

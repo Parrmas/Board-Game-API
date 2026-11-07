@@ -42,3 +42,15 @@ export const get = async (bgg_ids: number[]): Promise<GamesResult> => {
     throw new AppError("Failed to fetch games", 500);
   }
 };
+
+export const count = async (
+  filters: GameFilters,
+): Promise<{ total: number }> => {
+  try {
+    const total = await Game.countDocuments(buildFilterForOverall(filters));
+    return { total };
+  } catch (error) {
+    console.log("Error counting games: ", error);
+    throw new AppError("Failed to count games", 500);
+  }
+};
