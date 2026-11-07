@@ -39,7 +39,7 @@ export const generateToken = async (payload: JwtPayload): Promise<string> => {
   }
 
   return jwt.sign(payload, key, {
-    expiresIn: expire || "24h",
+    expiresIn: expire || "15m",
   } as jwt.SignOptions);
 };
 
@@ -66,9 +66,6 @@ export const login = async (
   );
   if (!user) {
     throw new AppError("Invalid email or password", 401);
-  }
-  if (user.isLoggedIn) {
-    throw new AppError("User is already logged in", 400);
   }
   const isPasswordValid = await bcrypt.compare(
     loginData.password,
