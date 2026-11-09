@@ -30,3 +30,13 @@ export interface IRegisterRequest {
 export interface IRefreshTokenRequest {
   refreshToken: string;
 }
+
+export interface UserDto {
+  id: string;
+  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  role: "user" | "admin";
+  savedGameIds: number[];
+}

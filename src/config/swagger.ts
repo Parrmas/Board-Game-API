@@ -146,22 +146,22 @@ const options: swaggerJsdoc.Options = {
         User: {
           type: "object",
           required: [
-            "_id",
+            "id",
             "email",
             "username",
             "firstName",
             "lastName",
             "role",
-            "fav_games_ids",
+            "savedGameIds",
           ],
           properties: {
-            _id: { type: "string" },
+            id: { type: "string" },
             email: { type: "string", format: "email" },
             username: { type: "string" },
             firstName: { type: "string" },
             lastName: { type: "string" },
             role: { type: "string", enum: ["user", "admin"] },
-            fav_games_ids: {
+            savedGameIds: {
               type: "array",
               items: { type: "number" },
             },

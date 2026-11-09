@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../src/app";
+import Game from "../src/module/game/game.model";
 
 describe("Auth flow", () => {
   const user = {
@@ -30,17 +31,19 @@ describe("Auth flow", () => {
     expect(meRes.status).toBe(200);
     expect(meRes.body.data).toEqual(
       expect.objectContaining({
-        _id: expect.any(String),
+        id: expect.any(String),
         email: user.email,
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
         role: "user",
-        fav_games_ids: [],
+        savedGameIds: [],
       }),
     );
     for (const field of [
       "__v",
+      "_id",
+      "fav_games_ids",
       "isLoggedIn",
       "password",
       "refreshTokenHash",
@@ -49,6 +52,46 @@ describe("Auth flow", () => {
     ]) {
       expect(meRes.body.data).not.toHaveProperty(field);
     }
+  });
+
+  it("returns saved game IDs after adding a profile game", async () => {
+    await request(app).post("/api/auth/register").send(user);
+    const loginRes = await request(app)
+      .post("/api/auth/get-token")
+      .send({ email: user.email, password: user.password });
+    const token = loginRes.body.data.token;
+
+    await Game.create({
+      _id: "saved-game",
+      bgg_id: 42,
+      name: "Saved Game",
+      description: "A test game",
+      year_published: 2020,
+      min_players: 1,
+      max_players: 4,
+      playing_time: 60,
+      min_playtime: 30,
+      max_playtime: 60,
+      min_age: 8,
+      image_url: "http://example.com/game.jpg",
+      thumbnail_url: "http://example.com/game-thumb.jpg",
+      average_rating: 7,
+      complexity_weight: 2,
+    });
+
+    const addRes = await request(app)
+      .post("/api/auth/profile-games/42")
+      .set("Authorization", `Bearer ${token}`);
+    expect(addRes.status).toBe(200);
+    expect(addRes.body.data).toEqual(
+      expect.arrayContaining([expect.objectContaining({ bgg_id: 42 })]),
+    );
+
+    const meRes = await request(app)
+      .get("/api/auth/user")
+      .set("Authorization", `Bearer ${token}`);
+    expect(meRes.status).toBe(200);
+    expect(meRes.body.data.savedGameIds).toEqual([42]);
   });
 
   it("refreshes tokens via cookie and rejects reused refresh tokens", async () => {
