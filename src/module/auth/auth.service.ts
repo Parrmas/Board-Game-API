@@ -5,6 +5,7 @@ import {
   IAuthResponse,
   JwtPayload,
   IRegisterRequest,
+  UserDto,
 } from "./auth.type";
 import User, { IUser } from "./auth.model";
 import Game, { IGame } from "../game/game.model";
@@ -157,12 +158,22 @@ export const verifyToken = async (token: string): Promise<JwtPayload> => {
   }
 };
 
-export const getUserById = async (userId: string) => {
+const toUserDto = (user: IUser): UserDto => ({
+  id: user._id,
+  email: user.email,
+  username: user.username,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  role: user.role,
+  savedGameIds: user.fav_games_ids ?? [],
+});
+
+export const getUserById = async (userId: string): Promise<UserDto> => {
   const user = await User.findById(userId).select("-__v -isLoggedIn").lean();
   if (!user) {
     throw new AppError("User not found", 404);
   }
-  return user;
+  return toUserDto(user);
 };
 
 export const getSavedGame = async (userId: string): Promise<IGame[]> => {
