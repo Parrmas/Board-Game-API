@@ -34,7 +34,9 @@ app.use(
     origin:
       process.env.NODE_ENV === "production"
         ? CORS_WHITELIST
-        : "http://localhost:3000",
+        : CORS_WHITELIST.length
+          ? CORS_WHITELIST
+          : "http://localhost:3000",
     credentials: true,
   }),
 );
