@@ -11,6 +11,8 @@ describe("AuthService token blacklist (bypassing HTTP layer)", () => {
     await AuthService.logout(token);
 
     // should now throw
-    await expect(AuthService.verifyToken(token)).rejects.toThrow();
+    await expect(AuthService.verifyToken(token)).rejects.toMatchObject({
+      statusCode: 401,
+    });
   });
 });

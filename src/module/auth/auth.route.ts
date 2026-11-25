@@ -1,7 +1,10 @@
 import { Router } from "express";
 import * as AuthController from "./auth.controller";
 import { authenticateToken } from "../../middleware/auth.middleware";
-import { authLimiter } from "../../middleware/rateLimit.middleware";
+import {
+  authLimiter,
+  refreshLimiter,
+} from "../../middleware/rateLimit.middleware";
 import { validateSchema } from "../../middleware/validateSchema.middleware";
 import { refreshTokenSchema, registerSchema } from "./auth.schema";
 
@@ -95,8 +98,7 @@ router.post("/get-token", authLimiter, AuthController.login);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/refresh-token", authLimiter, AuthController.refreshToken);
-
+router.post("/refresh-token", refreshLimiter, AuthController.refreshToken);
 /**
  * @swagger
  * /auth/invalidate-token:

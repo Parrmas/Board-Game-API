@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as AuthService from "../module/auth/auth.service";
+import { AppError } from "../utils/appError.util";
 
 export interface AuthenticatedRequest extends Request {
   user?: {
@@ -27,10 +28,10 @@ export const authenticateToken = async (
     const decoded = await AuthService.verifyToken(token);
     req.user = decoded;
     next();
-  } catch (error: any) {
-    return res.status(403).json({
-      success: false,
-      message: error.message,
-    });
+  } catch (error: unknown) {
+    const status = error instanceof AppError ? error.statusCode : 401;
+    const message =
+      error instanceof Error ? error.message : "Invalid or expired token";
+    return res.status(status).json({ success: false, message });
   }
 };

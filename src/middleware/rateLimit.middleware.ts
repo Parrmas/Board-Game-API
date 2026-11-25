@@ -1,12 +1,16 @@
 import rateLimit from "express-rate-limit";
 
-export const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per windowMs
-  skip: () => process.env.NODE_ENV === "test", // Skip rate limiting in testing
-  message: {
-    success: false,
-    message:
-      "Too many requests from this IP, please try again after 15 minutes",
-  },
-});
+const createLimiter = (max: number) =>
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max,
+    skip: () => process.env.NODE_ENV === "test",
+    message: {
+      success: false,
+      message:
+        "Too many requests from this IP, please try again after 15 minutes",
+    },
+  });
+
+export const authLimiter = createLimiter(10); // login, register
+export const refreshLimiter = createLimiter(60); // session restore / token refresh

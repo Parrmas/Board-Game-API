@@ -25,7 +25,7 @@ describe("Logout / token blacklist", () => {
     const meRes = await request(app)
       .get("/api/auth/user")
       .set("Authorization", `Bearer ${token}`);
-    expect(meRes.status).toBe(403);
+    expect(meRes.status).toBe(401);
   });
 
   it("allows logging back in after logout", async () => {

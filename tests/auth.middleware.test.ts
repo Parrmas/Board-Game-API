@@ -16,17 +16,17 @@ describe("authenticateToken middleware", () => {
     expect(res.status).toBe(401);
   });
 
-  it("rejects a malformed/garbage token with 403", async () => {
+  it("rejects a malformed/garbage token with 401", async () => {
     const res = await request(app)
       .get("/api/auth/user")
       .set("Authorization", "Bearer not.a.valid.jwt");
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(401);
   });
 
   it("rejects an empty Bearer token", async () => {
     const res = await request(app)
       .get("/api/auth/user")
       .set("Authorization", "Bearer ");
-    expect([401, 403]).toContain(res.status);
+    expect(res.status).toBe(401);
   });
 });
