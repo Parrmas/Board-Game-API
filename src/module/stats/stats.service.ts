@@ -112,6 +112,7 @@ export const getOverallStats = async (): Promise<OverallStats> => {
                 },
               },
             },
+            { $sort: { _id: 1 } },
             {
               $project: {
                 _id: 0,
@@ -131,7 +132,6 @@ export const getOverallStats = async (): Promise<OverallStats> => {
                 gameCount: 1,
               },
             },
-            { $sort: { range: 1 } },
           ],
 
           // Games published by year
